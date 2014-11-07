@@ -91,7 +91,7 @@ public class RegisterFragment extends Fragment {
     mPhoto.setOnLongClickListener(new View.OnLongClickListener() {
       @Override
       public boolean onLongClick(View v) {
-        mPhoto.setImageResource(R.drawable.ic_launcher);
+        mPhoto.setImageResource(R.drawable.ic_launcher_new);
         if (photoBitmap != null) {
           photoBitmap = null;
         }

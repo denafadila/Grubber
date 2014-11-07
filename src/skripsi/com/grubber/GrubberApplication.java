@@ -1,6 +1,8 @@
 package skripsi.com.grubber;
 
 import skripsi.com.android.Utility;
+import skripsi.com.grubber.model.Activity;
+import skripsi.com.grubber.model.Restaurant;
 import skripsi.com.grubber.tutorial.Tutorial;
 import android.app.Application;
 import android.content.Context;
@@ -9,6 +11,7 @@ import android.util.Log;
 
 import com.parse.Parse;
 import com.parse.ParseACL;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 public class GrubberApplication extends Application {
@@ -26,8 +29,8 @@ public class GrubberApplication extends Application {
 
   private void initializeParse() {
     // ParseObject subclass registration
-    // ParseObject.registerSubclass(Activity.class);
-    // ParseObject.registerSubclass(Topic.class);
+    ParseObject.registerSubclass(Restaurant.class);
+    ParseObject.registerSubclass(Activity.class);
     // initialize Parse
     Parse.initialize(this, Utility.getMetadata(this, GrubberApplication.PARSE_APP_ID),
         Utility.getMetadata(this, GrubberApplication.PARSE_CLIENT_KEY));
@@ -36,6 +39,7 @@ public class GrubberApplication extends Application {
     defaultACL.setPublicReadAccess(true);
     defaultACL.setPublicWriteAccess(true);
     ParseACL.setDefaultACL(defaultACL, true);
+
   }
 
   public static void showTutorial(Context context) {

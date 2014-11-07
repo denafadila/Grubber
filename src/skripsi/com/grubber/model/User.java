@@ -15,7 +15,7 @@ public class User {
 
   public static final String STALK_COUNTER = "stalkCounter";
   public static final String STALKER_COUNTER = "stalkerCounter";
-  public static final String POST_COUNTER = "postCounter";
+  public static final String REVIEW_COUNTER = "reviewCounter";
 
   public static User getCurrentUser() {
     ParseUser pu = ParseUser.getCurrentUser();

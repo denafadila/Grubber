@@ -6,7 +6,6 @@
     <string name="action_settings">Settings</string>
     <string name="PARSE_APP_ID">2dJH5iHjG7p8bt204AvSnTY7FOaBO7yukyqDlU8F</string>
     <string name="PARSE_CLIENT_KEY">CD4pF6xy6PJ5TtUaJ4MWj3aqbXO45lM6pmPO7Ovk</string>
-    
     <string name="grubber_main_register">Sign Up</string>
     <string name="grubber_registration_agree_tnc_statement">I accept Coortyard\'s %1$s and %2$s</string>
     <string name="grubber_registration_agree_tnc_tos">Terms of Service</string>
@@ -19,7 +18,7 @@
     <string name="grubber_registration_username_taken">Username is taken, please use something else</string>
     <string name="grubber_registration_username_invalid">Please specify a valid email</string>
     <string name="grubber_registration_password_required">Password must be at least 6 characters, and not using any whitespace character</string>
-    <string name="grubber_main_password_login_failed">Your Email address and password do not match</string>    
+    <string name="grubber_main_password_login_failed">Your Email address and password do not match</string>
     <string name="grubber_registration_password2_mismatch">Password does not match</string>
     <string name="grubber_registration_full_name_label">Your full name</string>
     <string name="grubber_registration_full_name_required">Full name must be at least 3 characters but not more than 33 characters long</string>
@@ -31,5 +30,10 @@
     <string name="grubber_registration_profile_picture_warning_yes">Yes!!</string>
     <string name="grubber_registration_profile_picture_warning_no">Not now</string>
     <string name="grubber_backend_error">Opps, we encountered server error. Please try again later</string>
+
+    <plurals name="grubber_restaurant_reviews">
+        <item quantity="one">%s Review</item>
+        <item quantity="other">%s Reviews</item>
+    </plurals>
 
 </resources>
