@@ -79,10 +79,12 @@ public class MainActivity extends ActionBarActivity {
         Toast.makeText(getBaseContext(), "Distance to Destination = " + finalDistance + " km",
             Toast.LENGTH_LONG).show();
 
-        Intent i = new Intent(MainActivity.this, RestaurantProfileActivity.class);
         Log.v(TAG, String.format("Sending [%s %s]", mResult.get(arg2).getName(), mResult.get(arg2)
             .getObjectId()));
-        i.putExtra("restId", mResult.get(arg2));
+        Intent i = new Intent(MainActivity.this, RestaurantProfileActivity.class);
+        i.putExtra("restObject", mResult.get(arg2));
+        i.putExtra("restId", mResult.get(arg2).getObjectId());
+        i.putExtra("restName", mResult.get(arg2).getName());
         startActivity(i);
 
       }

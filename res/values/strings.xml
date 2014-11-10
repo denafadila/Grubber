@@ -30,6 +30,8 @@
     <string name="grubber_registration_profile_picture_warning_yes">Yes!!</string>
     <string name="grubber_registration_profile_picture_warning_no">Not now</string>
     <string name="grubber_backend_error">Opps, we encountered server error. Please try again later</string>
+    <string name="grubber_profile_tab_myprofile">About Me</string>
+    <string name="grubber_profile_tab_profile">About me</string>
 
     <plurals name="grubber_restaurant_reviews">
         <item quantity="one">%s Review</item>

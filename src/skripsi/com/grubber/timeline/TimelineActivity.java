@@ -3,6 +3,7 @@ package skripsi.com.grubber.timeline;
 import skripsi.com.grubber.R;
 import skripsi.com.grubber.ar.ARtab;
 import skripsi.com.grubber.nonar.MainActivity;
+import skripsi.com.grubber.profile.ProfileFragment;
 import android.app.ActionBar;
 import android.app.LocalActivityManager;
 import android.graphics.Typeface;
@@ -24,13 +25,14 @@ public class TimelineActivity extends FragmentActivity {
   /* Tab Identifiers */
   static String timeline_tab = "Timeline";
   TabHost tabhost;
-  Timeline timeline;
+  TimelineListPostActivity timeline;
   Trending trending;
   MainActivity MapList;
   ARtab ar_tab;
   NavigationAR nav_ar;
   Notifications notif;
   Profile profile;
+  ProfileFragment prof;
 
   LocalActivityManager mLocalActivityManager = new LocalActivityManager(MapList, false);
 
@@ -56,13 +58,14 @@ public class TimelineActivity extends FragmentActivity {
     actionBar.setDisplayShowCustomEnabled(true);
 
     /* Tab */
-    timeline = new Timeline();
+    timeline = new TimelineListPostActivity();
     trending = new Trending();
     ar_tab = new ARtab();
     nav_ar = new NavigationAR();
     MapList = new MainActivity();
     notif = new Notifications();
     profile = new Profile();
+    prof = new ProfileFragment();
 
     tabhost = (TabHost) findViewById(android.R.id.tabhost);
     tabhost.setOnTabChangedListener(listener);
@@ -163,7 +166,7 @@ public class TimelineActivity extends FragmentActivity {
       } else if (tabId.equals("Notifications")) {
         pushFragments(tabId, notif);
       } else
-        pushFragments(tabId, profile);
+        pushFragments(tabId, prof);
     }
   };
 

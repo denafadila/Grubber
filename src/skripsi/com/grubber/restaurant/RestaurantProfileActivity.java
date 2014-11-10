@@ -1,7 +1,6 @@
 package skripsi.com.grubber.restaurant;
 
 import skripsi.com.grubber.R;
-import skripsi.com.grubber.adapter.RestaurantProfileAdapter;
 import skripsi.com.grubber.model.Restaurant;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -21,16 +20,12 @@ public class RestaurantProfileActivity extends FragmentActivity {
   private static final int POST_TAB = 2;
 
   public static final String USER_OBJECT_ID = "objectId";
-
   public static final String USER_SCREENNAME = "screenname";
+  public static String REST_OBJECT_ID = "restId";
+  public static String REST_NAME = "restName";
 
-  private RestaurantProfileAdapter mAdapter;
-  private String mRest;
   private Restaurant mDataRest;
   ListView mListView;
-
-  private String mRestNameString;
-  private int tempCountReviews = 0;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +35,14 @@ public class RestaurantProfileActivity extends FragmentActivity {
     final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
     final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
     Log.d(TAG, "OpenGL version  : " + configurationInfo.getGlEsVersion());
+    REST_OBJECT_ID = (String) getIntent().getSerializableExtra("restId");
+    REST_NAME = (String) getIntent().getSerializableExtra("restName");
+    mDataRest = (Restaurant) getIntent().getSerializableExtra("restObject");
+    Log.v(TAG, "ObjectToString = " + mDataRest.toString());
+    Log.v(TAG, "Object = " + mDataRest);
+    Log.v(TAG, "ID = " + REST_OBJECT_ID);
+    Log.v(TAG, "CITY + " + mDataRest.getCity()); // null
+    Log.v(TAG, "NAMA = " + REST_NAME);
     showFragment(PROFILE_TAB, false);
 
   }

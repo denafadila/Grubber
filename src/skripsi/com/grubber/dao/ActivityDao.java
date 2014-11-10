@@ -16,8 +16,9 @@ public class ActivityDao {
 
   private static final String TAG = RestaurantDao.class.getSimpleName();
 
-  public static Activity createNewPost(String content, User up, Restaurant rest, double cash,
+  public static Activity createNewPost(String content, User up, String rest, double cash,
       double rate) {
+
     Activity activity = new Activity();
     activity.setType(Activity.TYPE_REVIEW);
     activity.setRestId(rest);
@@ -54,22 +55,20 @@ public class ActivityDao {
     return result;
   }
 
-  public static int getRevCount(Restaurant restId) throws ParseException {
+  public static int getRevCount(String restId) throws ParseException {
     int result = 0;
-    List<Activity> act;
     ParseQuery<Activity> pq = ParseQuery.getQuery(Activity.class);
-    pq.whereEqualTo(Restaurant.ID, restId.getObjectId());
-    pq.whereContains(Activity.TYPE, Activity.TYPE_REVIEW);
+    pq.whereEqualTo(Activity.REST, restId);
+    pq.whereEqualTo(Activity.TYPE, Activity.TYPE_REVIEW);
     try {
-      act = pq.find();
-      // result = pq.count();
-      Log.v(TAG, String.format("Counted %s posts for [%s]", act.size(), restId.getName()));
+      result = pq.count();
+      Log.v(TAG, String.format("Counted %s posts for [%s]", result, restId));
     } catch (ParseException e) {
       Log.w(TAG, "Problem in counting posts", e);
       throw e;
     }
 
-    return 0;
+    return result;
   }
 
 }

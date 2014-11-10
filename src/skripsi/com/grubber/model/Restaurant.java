@@ -27,7 +27,7 @@ public class Restaurant extends ParseObject implements Serializable {
   }
 
   public String getName() {
-    return this.getString(NAME);
+    return getString(NAME);
   }
 
   public String getCity() {

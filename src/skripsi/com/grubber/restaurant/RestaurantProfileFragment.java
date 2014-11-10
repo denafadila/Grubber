@@ -49,7 +49,7 @@ public class RestaurantProfileFragment extends Fragment implements FragmentChang
   private LoadProfileTask mLoadProfileTask;
   private CountingTask mCountingTask;
 
-  private String mRestNameString;
+  private String mRestIdString;
   private int tempCountReviews = 0;
 
   @Override
@@ -57,14 +57,13 @@ public class RestaurantProfileFragment extends Fragment implements FragmentChang
     // TODO Auto-generated method stub
     super.onCreate(savedInstanceState);
     if (savedInstanceState == null) {
-
-      mRest = (Restaurant) getActivity().getIntent().getSerializableExtra("restId");
-      if (mRest == null) {
+      mRestIdString = (String) getActivity().getIntent().getSerializableExtra("restId");
+      if (mRestIdString == null) {
         Log.v(TAG, "mRest is null again!");
       } else
-        Log.v(TAG, "Bundle mRest = " + mRest.getObjectId());
+        Log.v(TAG, "Bundle mRest = " + mRestIdString);
     } else {
-      mRest = (Restaurant) savedInstanceState.getSerializable("restId");
+      mRestIdString = (String) savedInstanceState.getSerializable("restId");
     }
 
     mCountingTask = new CountingTask();
@@ -104,7 +103,8 @@ public class RestaurantProfileFragment extends Fragment implements FragmentChang
     mRestDesc.setText(rest.getDesc());
     mRateBar.setRating(rest.getStar());
     mCashBar.setRating(rest.getCash());
-    mTotalRev.setText(tempCountReviews);
+    mTotalRev.setText(getResources().getQuantityString(R.plurals.grubber_restaurant_reviews,
+        tempCountReviews, tempCountReviews));
   }
 
   public void showOtherFragment() {
@@ -133,8 +133,8 @@ public class RestaurantProfileFragment extends Fragment implements FragmentChang
       Restaurant up = null;
       try {
         // first step is load user Profile
-        Log.v(TAG, "Sending " + mRest + " away!");
-        up = RestaurantDao.getRestProfileById(mRest.getObjectId());
+        Log.v(TAG, "Sending " + mRestIdString + " away!");
+        up = RestaurantDao.getRestProfileById(mRestIdString);
         mDataRest = up;
 
         if (mDataRest == null) {
@@ -183,8 +183,8 @@ public class RestaurantProfileFragment extends Fragment implements FragmentChang
     @Override
     protected Activity doInBackground(Void... params) {
       try {
-        Log.v(TAG, "Count review for " + mRest);
-        tempCountReviews = ActivityDao.getRevCount(mRest);
+        Log.v(TAG, "Count review for " + mRestIdString);
+        tempCountReviews = ActivityDao.getRevCount(mRestIdString);
       } catch (ParseException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
@@ -200,7 +200,32 @@ public class RestaurantProfileFragment extends Fragment implements FragmentChang
     @Override
     protected void onPostExecute(Activity result) {
       super.onPostExecute(result);
+      mLoadProfileTask = new LoadProfileTask();
+      mLoadProfileTask.execute();
+    }
+  }
 
+  class UpdateStarRate extends AsyncTask<Void, Void, Activity> {
+    public UpdateStarRate() {
+    }
+
+    double star, rate;
+
+    @Override
+    protected Activity doInBackground(Void... params) {
+      try {
+        Log.v(TAG, "Count review for " + mRestIdString);
+        tempCountReviews = ActivityDao.getRevCount(mRestIdString);
+      } catch (ParseException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      return null;
+    }
+
+    @Override
+    protected void onPostExecute(Activity result) {
+      super.onPostExecute(result);
       mLoadProfileTask = new LoadProfileTask();
       mLoadProfileTask.execute();
     }

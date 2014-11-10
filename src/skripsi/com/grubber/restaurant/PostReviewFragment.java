@@ -130,7 +130,7 @@ public class PostReviewFragment extends Fragment implements FragmentChangeListen
       Restaurant up = mDataRest;
       try {
         if (content != null && mDataRest != null && cash >= 0 && rate >= 0) {
-          ActivityDao.createNewPost(content, User.getCurrentUser(), up, cash, rate);
+          ActivityDao.createNewPost(content, User.getCurrentUser(), up.getObjectId(), cash, rate);
           send = true;
           Log.v(TAG, "Send = " + send);
         } else {

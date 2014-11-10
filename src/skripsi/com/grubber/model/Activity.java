@@ -75,7 +75,7 @@ public class Activity extends AuditableParseObject {
     put(CASH, cash);
   }
 
-  public void setRestId(Restaurant rest) {
+  public void setRestId(String rest) {
     put(REST, rest);
   }
 
