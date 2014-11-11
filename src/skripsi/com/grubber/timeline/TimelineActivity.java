@@ -5,7 +5,6 @@ import skripsi.com.grubber.ar.ARtab;
 import skripsi.com.grubber.nonar.MainActivity;
 import skripsi.com.grubber.profile.ProfileFragment;
 import android.app.ActionBar;
-import android.app.LocalActivityManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,17 +28,14 @@ public class TimelineActivity extends FragmentActivity {
   Trending trending;
   MainActivity MapList;
   ARtab ar_tab;
-  NavigationAR nav_ar;
+  NavigationARFragment nav_ar;
   Notifications notif;
   Profile profile;
   ProfileFragment prof;
 
-  LocalActivityManager mLocalActivityManager = new LocalActivityManager(MapList, false);
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    mLocalActivityManager.dispatchCreate(savedInstanceState);
     setContentView(R.layout.timeline_main_tab);
 
     /* Action Bar */
@@ -61,7 +57,7 @@ public class TimelineActivity extends FragmentActivity {
     timeline = new TimelineListPostActivity();
     trending = new Trending();
     ar_tab = new ARtab();
-    nav_ar = new NavigationAR();
+    nav_ar = new NavigationARFragment();
     MapList = new MainActivity();
     notif = new Notifications();
     profile = new Profile();
@@ -205,14 +201,12 @@ public class TimelineActivity extends FragmentActivity {
   protected void onResume() {
     // TODO Auto-generated method stub
     super.onResume();
-    mLocalActivityManager.dispatchResume();
   }
 
   @Override
   protected void onPause() {
     // TODO Auto-generated method stub
     super.onPause();
-    mLocalActivityManager.dispatchPause(isFinishing());
 
   }
 }

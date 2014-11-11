@@ -1,6 +1,6 @@
 package skripsi.com.grubber.timeline;
 
-public class ReviewList {
+public class Activity {
 	
 	private String username;
 	private String restaurant;

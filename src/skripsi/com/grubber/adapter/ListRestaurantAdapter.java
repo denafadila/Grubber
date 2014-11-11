@@ -56,7 +56,7 @@ public class ListRestaurantAdapter extends BaseAdapter {
           .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
       convertView = inflater.inflate(R.layout.list_adapter, null);
     }
-    Restaurant data = new Restaurant();
+
     NumberFormat nm = NumberFormat.getNumberInstance();
 
     tvRestName = (TextView) convertView.findViewById(R.id.mainLine);

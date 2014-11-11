@@ -14,8 +14,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class NavigationAR extends Fragment {
-  public static final String TAG = NavigationAR.class.getSimpleName();
+public class NavigationARFragment extends Fragment {
+  public static final String TAG = NavigationARFragment.class.getSimpleName();
 
   public Button AR, NONAR;
 

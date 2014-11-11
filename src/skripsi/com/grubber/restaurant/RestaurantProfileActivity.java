@@ -21,7 +21,9 @@ public class RestaurantProfileActivity extends FragmentActivity {
 
   public static final String USER_OBJECT_ID = "objectId";
   public static final String USER_SCREENNAME = "screenname";
-  public static String REST_OBJECT_ID = "restId";
+
+  public static String REST_ID = "restId";
+  public static Restaurant REST_OBJECT;
   public static String REST_NAME = "restName";
 
   private Restaurant mDataRest;
@@ -35,14 +37,12 @@ public class RestaurantProfileActivity extends FragmentActivity {
     final ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
     final ConfigurationInfo configurationInfo = activityManager.getDeviceConfigurationInfo();
     Log.d(TAG, "OpenGL version  : " + configurationInfo.getGlEsVersion());
-    REST_OBJECT_ID = (String) getIntent().getSerializableExtra("restId");
+    REST_OBJECT = (Restaurant) getIntent().getSerializableExtra("restObject");
+    REST_ID = (String) getIntent().getSerializableExtra("restId");
     REST_NAME = (String) getIntent().getSerializableExtra("restName");
-    mDataRest = (Restaurant) getIntent().getSerializableExtra("restObject");
-    Log.v(TAG, "ObjectToString = " + mDataRest.toString());
-    Log.v(TAG, "Object = " + mDataRest);
-    Log.v(TAG, "ID = " + REST_OBJECT_ID);
-    Log.v(TAG, "CITY + " + mDataRest.getCity()); // null
-    Log.v(TAG, "NAMA = " + REST_NAME);
+    Log.v(TAG, "Object = " + REST_OBJECT);
+    Log.v(TAG, "Id = " + REST_ID);
+    Log.v(TAG, "Name = " + REST_NAME);
     showFragment(PROFILE_TAB, false);
 
   }

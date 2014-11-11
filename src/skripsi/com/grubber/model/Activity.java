@@ -30,6 +30,7 @@ public class Activity extends AuditableParseObject {
   public static final String STAR = "stars";
   public static final String CASH = "cash";
   public static final String REST = "restId";
+  public static final String RNAME = "restName";
 
   public static final String PARENT_ACT = "parentActivity";
 
@@ -54,8 +55,24 @@ public class Activity extends AuditableParseObject {
     return getString(REVIEW);
   }
 
+  public String getRestId() {
+    return getString(REST);
+  }
+
+  public String getRestName() {
+    return getString(RNAME);
+  }
+
   public String getType() {
     return getString(TYPE);
+  }
+
+  public double getRate() {
+    return getDouble(STAR);
+  }
+
+  public double getCash() {
+    return getDouble(CASH);
   }
 
   public void setType(String type) {
@@ -77,6 +94,14 @@ public class Activity extends AuditableParseObject {
 
   public void setRestId(String rest) {
     put(REST, rest);
+  }
+
+  public void setRestObject(Restaurant rest) {
+    put(REST, rest);
+  }
+
+  public void setRestName(String rest) {
+    put(RNAME, rest);
   }
 
   public void setParentPost(Activity post) {
@@ -175,4 +200,5 @@ public class Activity extends AuditableParseObject {
   public String toString() {
     return "Activity [getObjectId()=" + getObjectId() + "]";
   }
+
 }

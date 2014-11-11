@@ -44,6 +44,8 @@ public class PostReviewFragment extends Fragment implements FragmentChangeListen
   private RestaurantProfileAdapter mAdapter;
   private String mRest;
   private Restaurant mDataRest;
+  private String mStringRestName;
+  private String mStringRestId;
 
   private PostReviewTask mPostReviewTask;
 
@@ -60,10 +62,12 @@ public class PostReviewFragment extends Fragment implements FragmentChangeListen
         Log.v(TAG, "Bundle is null!");
       } else {
         mDataRest = (Restaurant) bundle.getSerializable("RestData");
+        mStringRestName = mDataRest.getName();
+        mStringRestId = mDataRest.getObjectId();
         if (mDataRest == null) {
           Log.v(TAG, "mDataRest == null!");
         } else {
-          Log.v(TAG, "mDataRest = " + mDataRest);
+          Log.v(TAG, "CURIGA -> mDataRest = " + mDataRest + " + " + mDataRest.getName());
         }
       }
 
@@ -127,10 +131,11 @@ public class PostReviewFragment extends Fragment implements FragmentChangeListen
     protected Restaurant doInBackground(Void... params) {
       // first step to make sure it is sending
       boolean send = false;
-      Restaurant up = mDataRest;
       try {
-        if (content != null && mDataRest != null && cash >= 0 && rate >= 0) {
-          ActivityDao.createNewPost(content, User.getCurrentUser(), up.getObjectId(), cash, rate);
+        if (content != null && mDataRest != null && cash >= 0 && rate >= 0
+            && mDataRest.getName() != null && mDataRest.getObjectId() != null) {
+          ActivityDao.createNewPost(content, User.getCurrentUser(), mDataRest, mDataRest.getName(),
+              mDataRest.getObjectId(), cash, rate);
           send = true;
           Log.v(TAG, "Send = " + send);
         } else {
@@ -139,13 +144,15 @@ public class PostReviewFragment extends Fragment implements FragmentChangeListen
           Log.v(TAG, "Rest = " + mDataRest.getName());
           Log.v(TAG, "Cash = " + cash);
           Log.v(TAG, "Rate = " + rate);
+          Log.v(TAG, "Name" + mDataRest.getName());
+          Log.v(TAG, "RestId = " + mDataRest.getObjectId());
 
         }
       } catch (Exception e) {
         Log.w(TAG, "Problem loading profile", e);
         e.printStackTrace();
       }
-      return up;
+      return mDataRest;
     }
 
     @Override

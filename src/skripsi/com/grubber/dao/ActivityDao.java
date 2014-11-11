@@ -16,12 +16,14 @@ public class ActivityDao {
 
   private static final String TAG = RestaurantDao.class.getSimpleName();
 
-  public static Activity createNewPost(String content, User up, String rest, double cash,
-      double rate) {
+  public static Activity createNewPost(String content, User up, Restaurant rest, String rName,
+      String restId, double cash, double rate) {
 
     Activity activity = new Activity();
     activity.setType(Activity.TYPE_REVIEW);
-    activity.setRestId(rest);
+    activity.setRestObject(rest);
+    activity.setRestId(restId);
+    activity.setRestName(rName);
     activity.setCash(cash);
     activity.setRate(rate);
     activity.setContent(content);
@@ -65,6 +67,26 @@ public class ActivityDao {
       Log.v(TAG, String.format("Counted %s posts for [%s]", result, restId));
     } catch (ParseException e) {
       Log.w(TAG, "Problem in counting posts", e);
+      throw e;
+    }
+
+    return result;
+  }
+
+  public static List<Activity> getPostList(String userFrom) throws ParseException {
+    ParseQuery<Activity> query = new ParseQuery<Activity>("Activity");
+    query.include("createdBy");
+    query.include("restoId");
+    query.orderByDescending("createdAt");
+
+    List<Activity> result = null;
+    try {
+      result = query.find();
+      Log.d(TAG,
+          String.format("getTimelinePostList found %s records", result == null ? 0 : result.size()));
+
+    } catch (ParseException e) {
+      Log.v(TAG, "Problem in getting posts", e);
       throw e;
     }
 
