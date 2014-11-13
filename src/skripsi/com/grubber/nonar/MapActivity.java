@@ -2,6 +2,7 @@ package skripsi.com.grubber.nonar;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.List;
 
 import skripsi.com.grubber.R;
@@ -15,15 +16,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.ParseException;
@@ -32,10 +36,12 @@ public class MapActivity extends ActionBarActivity {
   protected static final String TAG = MapActivity.class.getSimpleName();
 
   // Google Map
-  private LatLngBounds AUSTRALIA;
   private GoogleMap googleMap;
+  private HashMap<Marker, Restaurant> markerMap = new HashMap<Marker, Restaurant>();
+
   List<Restaurant> mResult;
   GPSActivity gpsAct;
+  final int currPost = 0;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +58,6 @@ public class MapActivity extends ActionBarActivity {
    * */
   private void initilizeMap() {
     if (googleMap == null) {
-
       googleMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
       // check if map is created successfully or not
       if (googleMap == null) {
@@ -62,35 +67,49 @@ public class MapActivity extends ActionBarActivity {
       googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(gpsAct.getLatitude(), gpsAct
           .getLongitude())));
       googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+      googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+      googleMap.getUiSettings().setZoomControlsEnabled(true);
+      googleMap.getUiSettings().setCompassEnabled(true);
+      googleMap.getUiSettings().setMyLocationButtonEnabled(true);
 
+      googleMap.getUiSettings().setRotateGesturesEnabled(false);
+      googleMap.getUiSettings().setScrollGesturesEnabled(true);
+      googleMap.getUiSettings().setTiltGesturesEnabled(true);
+      googleMap.getUiSettings().setZoomGesturesEnabled(true);
+
+      googleMap.setInfoWindowAdapter(new MyInfoWindowAdapter());
     }
     addMarker();
   }
 
   private void addMarker() {
-    MarkerOptions marker;
 
     googleMap.clear();
     // create marker
     for (int i = 0; i < mResult.size(); i++) {
-      // adding marker
+      // setting radius of <= 2 km
       if (countDist(mResult.get(i).getLat(), mResult.get(i).getLong()) < 2) {
-        googleMap.addMarker(new MarkerOptions()
-            .position(new LatLng(mResult.get(i).getLat(), mResult.get(i).getLong()))
-            .title(mResult.get(i).getName()).snippet(mResult.get(i).getCity())
-            .icon(BitmapDescriptorFactory.fromResource(R.drawable.pinpoint)));
-        final int currPost = i;
-        googleMap.setOnMarkerClickListener(new OnMarkerClickListener() {
+        // adding marker
+        markerMap.put(
+            googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(mResult.get(i).getLat(), mResult.get(i).getLong()))
+                .title(mResult.get(i).getName()).snippet(mResult.get(i).getCity())
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.pinpoint))), mResult.get(i));
+
+        googleMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 
           @Override
-          public boolean onMarkerClick(Marker arg0) {
+          public void onInfoWindowClick(Marker arg0) {
             // TODO Auto-generated method stub
-            Intent intent = new Intent(getBaseContext(), RestaurantProfileActivity.class);
-            intent.putExtra("restObject", mResult.get(currPost));
-            intent.putExtra("restId", mResult.get(currPost).getObjectId());
-            intent.putExtra("restName", mResult.get(currPost).getName());
-            startActivity(intent);
-            return false;
+            arg0.showInfoWindow();
+
+            if (markerMap.containsKey(arg0)) {
+              Intent intent = new Intent(MapActivity.this, RestaurantProfileActivity.class);
+              intent.putExtra("restObject", markerMap.get(arg0));
+              intent.putExtra("restId", markerMap.get(arg0).getObjectId());
+              intent.putExtra("restName", markerMap.get(arg0).getName());
+              startActivity(intent);
+            }
           }
         });
       }
@@ -169,6 +188,36 @@ public class MapActivity extends ActionBarActivity {
     }
 
     return values;
+  }
+
+  class MyInfoWindowAdapter implements InfoWindowAdapter {
+
+    private final View myContentsView;
+
+    MyInfoWindowAdapter() {
+      myContentsView = getLayoutInflater().inflate(R.layout.custom_info_content, null);
+    }
+
+    @Override
+    public View getInfoContents(Marker marker) {
+
+      TextView tvTitle = ((TextView) myContentsView.findViewById(R.id.title));
+      tvTitle.setText(marker.getTitle());
+      TextView tvSnippet = ((TextView) myContentsView.findViewById(R.id.snippet));
+      tvSnippet.setText(marker.getSnippet());
+
+      RatingBar rbCash = ((RatingBar) myContentsView.findViewById(R.id.rbCash));
+      RatingBar rbRate = ((RatingBar) myContentsView.findViewById(R.id.rbRate));
+
+      return myContentsView;
+    }
+
+    @Override
+    public View getInfoWindow(Marker marker) {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
   }
 
 }
