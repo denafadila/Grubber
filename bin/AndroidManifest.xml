@@ -22,6 +22,13 @@
         android:icon="@drawable/ic_launcher_new"
         android:label="@string/app_name"
         android:theme="@style/Theme.AppCompat" >
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="@string/GOOGLE_MAP_API2" />
+
         <activity
             android:name="skripsi.com.grubber.SplashActivity"
             android:label="@string/app_name"
@@ -57,6 +64,11 @@
         </activity>
         <activity
             android:name="skripsi.com.grubber.restaurant.RestaurantProfileActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme" >
+        </activity>
+        <activity
+            android:name="skripsi.com.grubber.nonar.MapActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme" >
         </activity>

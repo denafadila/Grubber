@@ -12,11 +12,10 @@ public class RestaurantDao {
 
   private static final String TAG = RestaurantDao.class.getSimpleName();
 
-  public static List<skripsi.com.grubber.model.Restaurant> getRest() throws ParseException {
+  public static List<Restaurant> getRest() throws ParseException {
     // posting by self
 
-    ParseQuery<skripsi.com.grubber.model.Restaurant> pqMine = ParseQuery
-        .getQuery(skripsi.com.grubber.model.Restaurant.class);
+    ParseQuery<Restaurant> pqMine = ParseQuery.getQuery(Restaurant.class);
 
     List<Restaurant> result = null;
     try {

@@ -39,6 +39,8 @@ import com.parse.ParseException;
 
 public class MainActivity extends ActionBarActivity {
 
+  protected static final String TAG = MainActivity.class.getSimpleName();
+
   List<Restaurant> mResult = null;
   ListView listView;
   ListRestaurantAdapter mAdapter;
@@ -55,8 +57,6 @@ public class MainActivity extends ActionBarActivity {
 
   private LocationManager locationManager = null;
   private LocationListener locationListener = null;
-
-  protected static final String TAG = MainActivity.class.getSimpleName();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +82,7 @@ public class MainActivity extends ActionBarActivity {
         Log.v(TAG, String.format("Sending [%s %s]", mResult.get(arg2).getName(), mResult.get(arg2)
             .getObjectId()));
         Intent i = new Intent(MainActivity.this, RestaurantProfileActivity.class);
+        i.putExtra("realDist", finalDistance);
         i.putExtra("restObject", mResult.get(arg2));
         i.putExtra("restId", mResult.get(arg2).getObjectId());
         i.putExtra("restName", mResult.get(arg2).getName());

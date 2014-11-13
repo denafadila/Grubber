@@ -6,6 +6,8 @@
     <string name="action_settings">Settings</string>
     <string name="PARSE_APP_ID">2dJH5iHjG7p8bt204AvSnTY7FOaBO7yukyqDlU8F</string>
     <string name="PARSE_CLIENT_KEY">CD4pF6xy6PJ5TtUaJ4MWj3aqbXO45lM6pmPO7Ovk</string>
+    <string name="GOOGLE_MAP_API">AIzaSyCwyTxf4E9bMSWHxdS1n_BCb_JfbE_SOUU</string>
+    <string name="GOOGLE_MAP_API2">AIzaSyCARHQM6Y1NwGyLftnWOWNdUcSAWPiHEqE</string>
     <string name="grubber_main_register">Sign Up</string>
     <string name="grubber_registration_agree_tnc_statement">I accept Coortyard\'s %1$s and %2$s</string>
     <string name="grubber_registration_agree_tnc_tos">Terms of Service</string>
