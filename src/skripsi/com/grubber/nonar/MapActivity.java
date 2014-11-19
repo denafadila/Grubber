@@ -25,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.InfoWindowAdapter;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -102,7 +103,6 @@ public class MapActivity extends ActionBarActivity {
           public void onInfoWindowClick(Marker arg0) {
             // TODO Auto-generated method stub
             arg0.showInfoWindow();
-
             if (markerMap.containsKey(arg0)) {
               Intent intent = new Intent(MapActivity.this, RestaurantProfileActivity.class);
               intent.putExtra("restObject", markerMap.get(arg0));
@@ -110,15 +110,30 @@ public class MapActivity extends ActionBarActivity {
               intent.putExtra("restName", markerMap.get(arg0).getName());
               startActivity(intent);
             }
+
           }
         });
+
       }
     }
 
     googleMap.addMarker(new MarkerOptions()
         .position(new LatLng(gpsAct.getLatitude(), gpsAct.getLongitude())).title("You are here")
         .icon(BitmapDescriptorFactory.fromResource(R.drawable.currloc)));
+    googleMap.setOnMarkerClickListener(new OnMarkerClickListener() {
 
+      @Override
+      public boolean onMarkerClick(Marker arg0) {
+        // TODO Auto-generated method stub
+        Log.v(TAG, "Clicked = " + arg0.getTitle());
+        if (arg0.getTitle().equalsIgnoreCase("You are here")) {
+          arg0.hideInfoWindow();
+        } else {
+          arg0.showInfoWindow();
+        }
+        return true;
+      }
+    });
   }
 
   @Override
@@ -181,7 +196,7 @@ public class MapActivity extends ActionBarActivity {
     double values = rounded.doubleValue();
 
     if (values > 1) {
-      values = (Double) (values * 0.001f);// convert meters to Kilometers
+      values = values * 0.001f;// convert meters to Kilometers
       bd = new BigDecimal(values);
       rounded = bd.setScale(2, RoundingMode.HALF_UP);
       values = rounded.doubleValue();
@@ -195,7 +210,7 @@ public class MapActivity extends ActionBarActivity {
     private final View myContentsView;
 
     MyInfoWindowAdapter() {
-      myContentsView = getLayoutInflater().inflate(R.layout.custom_info_content, null);
+      myContentsView = getLayoutInflater().inflate(R.layout.adapter_custom_mapinfo, null);
     }
 
     @Override

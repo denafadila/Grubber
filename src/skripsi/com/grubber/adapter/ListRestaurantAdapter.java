@@ -54,7 +54,7 @@ public class ListRestaurantAdapter extends BaseAdapter {
     if (convertView == null) {
       LayoutInflater inflater = (LayoutInflater) this.context
           .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-      convertView = inflater.inflate(R.layout.list_adapter, null);
+      convertView = inflater.inflate(R.layout.adapter_rest_list, null);
     }
 
     NumberFormat nm = NumberFormat.getNumberInstance();

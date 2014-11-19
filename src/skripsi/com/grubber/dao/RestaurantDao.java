@@ -19,7 +19,7 @@ public class RestaurantDao {
 
     List<Restaurant> result = null;
     try {
-      result = (List<Restaurant>) pqMine.find();
+      result = pqMine.find();
       Log.d(TAG, String.format("getRest found %s records", result == null ? 0 : result.size()));
     } catch (ParseException e) {
       Log.w(TAG, "Problem in retrieving timeline", e);

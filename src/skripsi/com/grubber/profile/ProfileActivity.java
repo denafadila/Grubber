@@ -1,14 +1,11 @@
 package skripsi.com.grubber.profile;
 
-import skripsi.com.grubber.GrubberActivity;
 import skripsi.com.grubber.R;
 import skripsi.com.grubber.adapter.UserProfileAdapter;
 import skripsi.com.grubber.model.User;
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.util.Log;
 
 public class ProfileActivity extends FragmentActivity {

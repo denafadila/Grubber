@@ -8,6 +8,7 @@ import skripsi.com.grubber.model.Activity;
 import skripsi.com.grubber.model.Restaurant;
 import skripsi.com.grubber.restaurant.RestaurantProfileActivity.FragmentChangeListener;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -32,6 +34,7 @@ public class RestaurantProfileFragment extends Fragment implements FragmentChang
   private ImageButton mPhoto = null;
   private byte[] photoBitmap = null;
   private Bitmap photoThumbnail = null;
+  private ImageView mProfilePic = null;
   private TextView mRestName = null;
   private TextView mRestCity = null;
   private TextView mRestDesc = null;
@@ -77,6 +80,7 @@ public class RestaurantProfileFragment extends Fragment implements FragmentChang
   }
 
   public void getRestView() {
+    mProfilePic = (ImageView) getView().findViewById(R.id.ibProfilePhoto);
     mRestName = (TextView) getView().findViewById(R.id.tvRestName);
     mRestCity = (TextView) getView().findViewById(R.id.tvRestCity);
     mRestDesc = (TextView) getView().findViewById(R.id.tvRestDesc);
@@ -96,8 +100,12 @@ public class RestaurantProfileFragment extends Fragment implements FragmentChang
     mListView = (ListView) getView().findViewById(R.id.lvRestReview);
   }
 
-  public void setRestView(Restaurant rest) {
+  public void setRestView(Restaurant rest) throws ParseException {
     getRestView();
+    Bitmap bm;
+    bm = BitmapFactory.decodeByteArray(rest.getPhotoThumbnail().getData(), 0, rest
+        .getPhotoThumbnail().getData().length);
+    mProfilePic.setImageBitmap(bm);
     mRestName.setText(rest.getName());
     mRestCity.setText(rest.getCity());
     mRestDesc.setText(rest.getDesc());
@@ -169,7 +177,12 @@ public class RestaurantProfileFragment extends Fragment implements FragmentChang
       }
       // mListView.setAdapter(mAdapter);
       if (mDataRest != null) {
-        setRestView(mDataRest);
+        try {
+          setRestView(mDataRest);
+        } catch (ParseException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       } else {
         Log.v(TAG, "mDataRest = null!");
       }

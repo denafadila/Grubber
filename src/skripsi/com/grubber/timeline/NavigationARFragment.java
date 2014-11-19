@@ -1,7 +1,7 @@
 package skripsi.com.grubber.timeline;
 
 import skripsi.com.grubber.R;
-import skripsi.com.grubber.nonar.MainActivity;
+import skripsi.com.grubber.ar.ARActivity;
 import skripsi.com.grubber.nonar.MapActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -51,7 +51,7 @@ public class NavigationARFragment extends Fragment {
       @Override
       public void onClick(View v) {
         // TODO Auto-generated method stub
-        Intent ar = new Intent(getActivity(), MapActivity.class);
+        Intent ar = new Intent(getActivity(), ARActivity.class);
         startActivity(ar);
       }
     });
@@ -61,7 +61,7 @@ public class NavigationARFragment extends Fragment {
       @Override
       public void onClick(View v) {
         // TODO Auto-generated method stub
-        Intent nonar = new Intent(getActivity(), MainActivity.class);
+        Intent nonar = new Intent(getActivity(), MapActivity.class);
         startActivity(nonar);
       }
     });

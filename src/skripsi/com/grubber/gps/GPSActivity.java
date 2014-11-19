@@ -150,6 +150,7 @@ public class GPSActivity extends Service implements LocationListener {
 
     // On pressing Settings button
     alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+      @Override
       public void onClick(DialogInterface dialog, int which) {
         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         mContext.startActivity(intent);
@@ -158,6 +159,7 @@ public class GPSActivity extends Service implements LocationListener {
 
     // on pressing cancel button
     alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+      @Override
       public void onClick(DialogInterface dialog, int which) {
         dialog.cancel();
       }

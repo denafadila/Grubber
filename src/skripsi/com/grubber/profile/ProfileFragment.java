@@ -87,7 +87,7 @@ public class ProfileFragment extends Fragment {
     mFollow = (ToggleButton) v.findViewById(R.id.btnFollow);
     Log.v(TAG, "isMe ->" + isMe);
     if (isMe == user) {
-      mFollow.setVisibility(v.GONE);
+      mFollow.setVisibility(View.GONE);
     }
     return v;
   }

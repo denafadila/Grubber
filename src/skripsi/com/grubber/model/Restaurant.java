@@ -3,6 +3,7 @@ package skripsi.com.grubber.model;
 import java.io.Serializable;
 
 import com.parse.ParseClassName;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 
 @ParseClassName("Restaurant")
@@ -21,6 +22,8 @@ public class Restaurant extends ParseObject implements Serializable {
   public static final String LAT = "latitude";
   public static final String STAR = "stars";
   public static final String CASH = "cash";
+
+  public static final String PHOTO_THUMBNAIL = "photoThumbnail";
 
   public ParseObject getRestObject() {
     return getParseObject(ID);
@@ -52,6 +55,10 @@ public class Restaurant extends ParseObject implements Serializable {
 
   public double getLong() {
     return getDouble(LONG);
+  }
+
+  public ParseFile getPhotoThumbnail() {
+    return getParseFile(PHOTO_THUMBNAIL);
   }
 
 }

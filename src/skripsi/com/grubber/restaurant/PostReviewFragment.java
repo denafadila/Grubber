@@ -160,6 +160,7 @@ public class PostReviewFragment extends Fragment implements FragmentChangeListen
       super.onPostExecute(result);
       Log.v(TAG, "Finished task!");
       showOtherFragment();
+      getActivity().finish();
     }
   }
 

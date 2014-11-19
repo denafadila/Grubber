@@ -36,20 +36,27 @@
             android:layout_below="@+id/restaurant"
             android:textSize="15sp" />
 
-        <TextView
+        <RatingBar
             android:id="@+id/rating"
+            style="@style/GrubberRatingBar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30sp"
             android:layout_below="@+id/review"
-            android:textSize="15sp" />
+            android:isIndicator="true"
+            android:numStars="5"
+            android:rating="1.0"
+            android:stepSize="1.0" />
 
-        <TextView
+        <RatingBar
             android:id="@+id/price"
+            style="@style/GrubberCashBar"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/review"
-            android:layout_toRightOf="@+id/rating"
-            android:textSize="15sp" />
+            android:layout_height="30sp"
+            android:layout_below="@+id/rating"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:rating="1.0"
+            android:stepSize="1.0" />
 
         <TextView
             android:id="@+id/date"

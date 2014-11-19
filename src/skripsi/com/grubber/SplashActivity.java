@@ -16,6 +16,7 @@ public class SplashActivity extends Activity {
 
     /****** Create Thread that will sleep for 5 seconds *************/
     Thread background = new Thread() {
+      @Override
       public void run() {
 
         try {

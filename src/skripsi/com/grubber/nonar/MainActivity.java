@@ -189,6 +189,7 @@ public class MainActivity extends ActionBarActivity {
     builder.setMessage("Your Device's GPS is Disable").setCancelable(false)
         .setTitle("** Gps Status **")
         .setPositiveButton("Gps On", new DialogInterface.OnClickListener() {
+          @Override
           public void onClick(DialogInterface dialog, int id) {
             // finish the current activity
             // AlertBoxAdvance.this.finish();
@@ -197,6 +198,7 @@ public class MainActivity extends ActionBarActivity {
             dialog.cancel();
           }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+          @Override
           public void onClick(DialogInterface dialog, int id) {
             // cancel the dialog box
             dialog.cancel();
@@ -286,7 +288,7 @@ public class MainActivity extends ActionBarActivity {
     double values = rounded.doubleValue();
 
     if (values > 1) {
-      values = (Double) (values * 0.001f);// convert meters to Kilometers
+      values = values * 0.001f;// convert meters to Kilometers
       bd = new BigDecimal(values);
       rounded = bd.setScale(2, RoundingMode.HALF_UP);
       values = rounded.doubleValue();
