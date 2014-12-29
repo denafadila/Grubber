@@ -5,6 +5,7 @@ import com.parse.ParseUser;
 
 public class User {
   public ParseUser parseUser = null;
+  public Activity act = null;
   public static final String FULL_NAME = "fullName";
   public static final String EMAIL = "email";
   public static final String PARSE_USER = "parseUser";
@@ -33,6 +34,10 @@ public class User {
 
   public User(ParseUser parseUser) {
     this.parseUser = parseUser;
+  }
+
+  public User(Activity act) {
+    this.act = act;
   }
 
   public ParseUser getParseUser() {
@@ -95,17 +100,17 @@ public class User {
     return parseUser.getObjectId();
   }
 
-  public static boolean isMyScreenname(String screenname) {
-    return screenname != null && getCurrentUser() != null
-        && screenname.equalsIgnoreCase(getCurrentUser().getUserName());
+  public static boolean isMyUsername(String username) {
+    return username != null && getCurrentUser() != null
+        && username.equalsIgnoreCase(getCurrentUser().getUserName());
   }
 
   public static boolean isMyUserId(String userId) {
     return getCurrentUser() != null && getCurrentUser().getObjectId().equals(userId);
   }
 
-  public static boolean isMe(User user, String userId, String screenname) {
+  public static boolean isMe(User user, String userId, String username) {
     return (getCurrentUser() != null && getCurrentUser().equals(user)) || isMyUserId(userId)
-        || isMyScreenname(screenname);
+        || isMyUsername(username);
   }
 }

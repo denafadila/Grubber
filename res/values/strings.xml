@@ -34,13 +34,25 @@
     <string name="grubber_backend_error">Opps, we encountered server error. Please try again later</string>
     <string name="grubber_profile_tab_myprofile">About Me</string>
     <string name="grubber_profile_tab_profile">About me</string>
+    <string name="comment_text">Add Comment..</string>
+    <string name="button_send">Send</string>
 
     <plurals name="grubber_restaurant_reviews">
         <item quantity="one">%s Review</item>
         <item quantity="other">%s Reviews</item>
     </plurals>
-    
-    
+    <plurals name="grubber_user_review">
+        <item quantity="one">%s Review</item>
+        <item quantity="other">%s Reviews</item>
+    </plurals>
+    <plurals name="grubber_user_stalk">
+        <item quantity="one">Stalking %s Grubber</item>
+        <item quantity="other">Stalking %s Grubbers</item>
+    </plurals>
+    <plurals name="grubber_user_stalked">
+        <item quantity="one">Stalked by %s grubber </item>
+        <item quantity="other">Stalked by %s grubbers</item>
+    </plurals>
     <item name="tag_bitmap_worker" type="id"/>
 
 </resources>

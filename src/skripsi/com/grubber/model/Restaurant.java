@@ -37,11 +37,15 @@ public class Restaurant extends ParseObject implements Serializable {
     return getString(CITY);
   }
 
+  public String getAddress() {
+    return getString(ADDRESS);
+  }
+
   public String getDesc() {
     return getString(DESC);
   }
 
-  public float getStar() {
+  public float getRate() {
     return (float) getDouble(STAR);
   }
 

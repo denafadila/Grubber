@@ -1,151 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-<LinearLayout
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical" >
 
-    <RelativeLayout
-        android:id="@+id/rlProfile"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp" >
+        android:orientation="vertical" >
 
-        <ImageButton
-            android:id="@+id/ibProfilePhoto"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="16dp"
-            android:src="@drawable/abc_ic_search"
-            android:contentDescription="profile picture"
-            android:scaleType="fitCenter" />
-
-        <LinearLayout
-            android:id="@+id/llProfileFields"
+        <RelativeLayout
+            android:id="@+id/rlProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ibProfilePhoto"
-            android:orientation="vertical"
-            android:visibility="visible" >
+            android:background="@color/grey_bg"
+            android:padding="16dp" >
+
+            <ImageButton
+                android:id="@+id/ibProfilePhoto"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="5dp"
+                android:contentDescription="profile picture"
+                android:scaleType="fitCenter"
+                android:src="@drawable/abc_ic_search" />
 
             <LinearLayout
-                android:id="@+id/llProfileName"
+                android:id="@+id/llProfileFields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/ibProfilePhoto"
+                android:orientation="vertical"
+                android:visibility="visible" >
+
+                <LinearLayout
+                    android:id="@+id/llProfileName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tvUserName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="loading"
+                        android:textColor="@android:color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvFullName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="loading"
+                        android:textColor="@android:color/black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvAboutMe"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:gravity="left"
+                        android:text="loading"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlGetSpecificData"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_below="@id/llProfileFields"
+                android:layout_centerHorizontal="true"
+                android:layout_toRightOf="@+id/ibProfilePhoto"
+                android:gravity="center_horizontal"
+                android:paddingTop="0dp" >
+
+                <LinearLayout
+                    android:id="@+id/llStalkCount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/tvStalk"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:padding="2dp"
+                        android:text="@plurals/grubber_user_stalk"
+                        android:textColor="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/tvRevCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:padding="2dp"
+                        android:text="@plurals/grubber_user_review"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/llButtons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ibProfilePhoto"
                 android:layout_marginTop="7dp"
                 android:orientation="horizontal" >
 
-                <TextView
-                    android:id="@+id/tvFullName"
+                <Button
+                    android:id="@+id/btnFollow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:text="loading"
-                    android:textColor="@android:color/black"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="3dp"
+                    android:text="Follow" />
 
-                <TextView
-                    android:id="@+id/tvUserName"
+                <Button
+                    android:id="@+id/btnSearch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="loading"
-                    android:textColor="@android:color/black"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+                    android:layout_marginTop="3dp"
+                    android:text="Search" />
 
-            <TextView
-                android:id="@+id/tvAboutMe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:gravity="center"
-                android:text="loading"
-                android:textColor="@android:color/black" />
-        </LinearLayout>
-
-        <RelativeLayout
-            android:id="@+id/rlGetSpecificData"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/llProfileFields"
-            android:layout_centerHorizontal="true"
-            android:gravity="center_horizontal"
-            android:paddingTop="16dp" >
-
-            <LinearLayout
-                android:id="@+id/llGetFollowTopic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <ImageView
+                <Button
+                    android:id="@+id/btnLogOut"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="2dp"
-                    android:src="@drawable/abc_ic_search" />
-
-                <TextView
-                    android:id="@+id/tvFillMeFollowTopic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:padding="2dp"
-                    android:text="follow topic"
-                    android:textColor="@android:color/black" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llGetFollowUser"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/llGetFollowTopic"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="2dp"
-                    android:src="@drawable/abc_ic_search" />
-
-                <TextView
-                    android:id="@+id/tvFillMeFollowUser"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:padding="2dp"
-                    android:text="follow user"
-                    android:textColor="@android:color/black" />
+                    android:layout_marginTop="3dp"
+                    android:text="LogOut" />
             </LinearLayout>
         </RelativeLayout>
+    </LinearLayout>
 
-        <ToggleButton
-            android:id="@+id/btnFollow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/rlGetSpecificData"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginTop="16dp"
-            android:enabled="false"
-            android:textOff="follow"
-            android:textOn="unfollow" />
-        
-        <Button
-            android:id="@+id/btnLogOut"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/btnFollow"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
-            android:text="LogOut" />
-
-    </RelativeLayout>
-
-</LinearLayout>
 </ScrollView>

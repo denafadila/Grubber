@@ -11,18 +11,20 @@ import com.parse.ParseUser;
 @ParseClassName("Activity")
 public class Activity extends AuditableParseObject {
   private static final String TAG = Activity.class.getSimpleName();
-
+  public static User userTemp;
   public static final String TYPE = "type";
 
   public static final String TYPE_REVIEW = "R";
   public static final String COUNT_REVIEW = "review";
 
   public static final String TYPE_COMMENT = "C";
-  public static final String COUNT_COMMENTS = "comments";
+  public static final String COUNT_COMMENTS = "review";
+  public static final String COMMENT_POST = "review";
+  public static final String REVIEW_ID = "reviewId";
+  public static final String STATUS = "status";
 
   public static final String TYPE_STALK = "S";
   public static final String TARGET_USER_PROFILE = "targetUserProfile";
-  public static final String TARGET_USER_PROFILE_ID = "targetUserProfileId";
 
   public static final String TYPE_FAVORITE = "F";
 
@@ -79,6 +81,18 @@ public class Activity extends AuditableParseObject {
     put(TYPE, type);
   }
 
+  public String getReviewId() {
+    return getString(REVIEW_ID);
+  }
+
+  public String getStatus() {
+    return getString(STATUS);
+  }
+
+  public void setStatus(String status) {
+    put(STATUS, status);
+  }
+
   // POST
   public void setContent(String content) {
     put(REVIEW, content);
@@ -108,6 +122,10 @@ public class Activity extends AuditableParseObject {
     put(PARENT_ACT, post);
   }
 
+  public void setReviewId(String reviewId) {
+    put(REVIEW_ID, reviewId);
+  }
+
   public Activity getParentPost() {
     return (Activity) get(PARENT_ACT);
   }
@@ -118,7 +136,6 @@ public class Activity extends AuditableParseObject {
 
   public void setTargetUser(User targetUserProfile) {
     put(TARGET_USER_PROFILE, targetUserProfile.getParseUser());
-    put(TARGET_USER_PROFILE_ID, targetUserProfile.getObjectId());
   }
 
   public void setStrComment(String comment) {

@@ -11,7 +11,6 @@ public class SplashActivity extends Activity {
     super.onCreate(savedInstanceState);
 
     setContentView(R.layout.fragment_splash);
-    this.getActionBar().hide();
     // METHOD 1
 
     /****** Create Thread that will sleep for 5 seconds *************/
@@ -21,7 +20,7 @@ public class SplashActivity extends Activity {
 
         try {
           // Thread will sleep for 5 seconds
-          sleep(5 * 10);
+          sleep(3 * 1000);
 
           // After 5 seconds redirect to another intent
           Intent i = new Intent(getBaseContext(), MainActivity.class);

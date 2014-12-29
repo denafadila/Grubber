@@ -110,6 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/llProfileFields"
             android:layout_centerHorizontal="true"
+            android:paddingTop="15sp"
             android:gravity="center_horizontal" >
 
             <ListView

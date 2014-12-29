@@ -6,7 +6,7 @@ import skripsi.com.grubber.R;
 import skripsi.com.grubber.adapter.PostListAdapter;
 import skripsi.com.grubber.dao.ActivityDao;
 import skripsi.com.grubber.model.Activity;
-import skripsi.com.grubber.nonar.MainActivity;
+import skripsi.com.grubber.model.User;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,15 +17,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.parse.DeleteCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseUser;
 
 public class TimelineListPostActivity extends Fragment {
 
-  protected static final String TAG = MainActivity.class.getSimpleName();
+  protected static final String TAG = TimelineListPostActivity.class.getSimpleName();
 
   ListView listview;
   List<Activity> mResult;
+  List<ParseUser> uResult;
   ProgressDialog timeline_progress;
   PostListAdapter mAdapter;
 
@@ -66,7 +69,24 @@ public class TimelineListPostActivity extends Fragment {
       try {
         Log.v(TAG, "Getting post list for current user = "
             + ParseUser.getCurrentUser().getUsername());
-        mResult = ActivityDao.getPostList(ParseUser.getCurrentUser().toString());
+        final String CACHE_REVIEW = "reviewId";
+        // mResult = ActivityDao.getPostList(ParseUser.getCurrentUser().toString());
+        if (ActivityDao.getLocalPostList(User.getCurrentUser()).size() == 0) {
+          Log.d("mResult", "!!!!getPostList");
+          mResult = ActivityDao.getPostList(User.getCurrentUser());
+        } else {
+          Log.d("mResult", "!!!!getLocalPostList");
+          mResult = ActivityDao.getLocalPostList(User.getCurrentUser());
+        }
+        ParseObject.unpinAllInBackground(CACHE_REVIEW, mResult, new DeleteCallback() {
+
+          @Override
+          public void done(ParseException e) {
+            // TODO Auto-generated method stub
+            ParseObject.pinAllInBackground(CACHE_REVIEW, mResult);
+            Log.d(TAG, "cache succeed");
+          }
+        });
       } catch (ParseException e) {
         Log.v(TAG, "Failed to get post list for current user");
         e.printStackTrace();

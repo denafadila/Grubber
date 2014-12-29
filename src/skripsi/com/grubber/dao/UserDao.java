@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import skripsi.com.android.Utility;
+import skripsi.com.grubber.model.Activity;
 import skripsi.com.grubber.model.AuditableParseObject;
 import skripsi.com.grubber.model.User;
 import android.content.Context;
@@ -56,40 +57,69 @@ public class UserDao extends ParseObject {
     return user;
   }
 
-  public static User getUserProfileById(String userId, String username) throws ParseException {
-    ParseQuery<ParseUser> pqAll = getUserParseQuery(userId, username);
+  public static int getRevCountById(ParseUser userId) throws ParseException {
 
-    ParseUser pu;
-    User temp = null;
+    ParseQuery<Activity> pqAll = new ParseQuery<Activity>("Activity");
+    pqAll.whereEqualTo(Activity.TYPE, Activity.TYPE_REVIEW);
+    pqAll.whereEqualTo(Activity.CREATED_BY, userId);
+
+    int totalRevCount;
     try {
-      pu = pqAll.getFirst();
-      Log.v(TAG, String.format("Loaded UserProfile [%s/%s]", userId, username));
+      totalRevCount = pqAll.count();
+      Log.v(TAG, String.format("Loaded UserProfile [%s]", userId.toString()));
     } catch (ParseException e) {
-      Log.w(TAG, String.format("Problem loading UserProfile [%s/%s]", userId, username), e);
+      Log.w(TAG, String.format("Problem loading UserProfile [%s]", userId.toString()), e);
       throw e;
     }
-    if (pu != null) {
-      temp = new User();
-      temp.parseUser = pu;
-    }
-    return temp;
+
+    return totalRevCount;
   }
 
-  public static ParseQuery<ParseUser> getUserParseQuery(String userId, String username) {
-    List<ParseQuery<ParseUser>> queries = new ArrayList<ParseQuery<ParseUser>>();
-    if (userId != null) {
-      ParseQuery<ParseUser> pq1 = ParseUser.getQuery();
-      pq1.whereEqualTo(AuditableParseObject.OBJECT_ID, userId);
-      queries.add(pq1);
-    }
-    if (username != null) {
-      ParseQuery<ParseUser> pq2 = ParseUser.getQuery();
-      pq2.whereMatches(User.USERNAME, username, "i");
-      queries.add(pq2);
+  public static int getStalkCountById(ParseUser userId) throws ParseException {
+
+    ParseQuery<Activity> pqAll = new ParseQuery<Activity>("Activity");
+    pqAll.whereEqualTo(Activity.TYPE, Activity.TYPE_STALK);
+    pqAll.whereEqualTo(Activity.CREATED_BY, userId);
+
+    int totalStalkCount;
+    try {
+      pqAll.find();
+      totalStalkCount = pqAll.count();
+      Log.v(TAG, String.format("Loaded UserProfile [%s]", userId.toString()));
+    } catch (ParseException e) {
+      Log.w(TAG, String.format("Problem loading UserProfile [%s]", userId.toString()), e);
+      throw e;
     }
 
-    ParseQuery<ParseUser> pqU = ParseQuery.or(queries);
-    pqU.setLimit(1);
-    return pqU;
+    return totalStalkCount;
+  }
+
+  public static List<User> getUser(String username, String objectId) throws ParseException {
+    ParseQuery<ParseUser> query1 = ParseQuery.getQuery(ParseUser.class);
+    Log.v(TAG, "Getting " + username + " & " + objectId);
+    query1.whereEqualTo(AuditableParseObject.OBJECT_ID, objectId);
+    query1.whereEqualTo(User.USERNAME, username);
+
+    List<User> result = null;
+    List<ParseUser> temp = null;
+    int recordsFound = 0;
+    try {
+      recordsFound = query1.count();
+      Log.v(TAG, "User like found -> " + recordsFound);
+      temp = query1.find();
+
+      if (temp != null && !temp.isEmpty()) {
+        result = new ArrayList<User>();
+        for (ParseUser parseUser : temp) {
+          result.add(new User(parseUser));
+        }
+      }
+      Log.d(TAG,
+          String.format("Search people found %s records", result == null ? 0 : result.size()));
+    } catch (ParseException e) {
+      Log.w(TAG, "Problem in retrieving people", e);
+      throw e;
+    }
+    return result;
   }
 }

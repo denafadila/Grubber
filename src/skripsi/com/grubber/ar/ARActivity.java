@@ -5,13 +5,16 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
 import skripsi.com.grubber.R;
 import skripsi.com.grubber.dao.RestaurantDao;
-import skripsi.com.grubber.gps.GPSActivity;
+import skripsi.com.grubber.gps.LocationUtils;
 import skripsi.com.grubber.model.Restaurant;
+import skripsi.com.grubber.restaurant.RestaurantProfileActivity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
@@ -21,6 +24,10 @@ import android.text.TextPaint;
 import android.util.Log;
 import android.view.View;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
 import com.metaio.cloud.plugin.util.MetaioCloudUtils;
 import com.metaio.sdk.ARELInterpreterAndroidJava;
 import com.metaio.sdk.ARViewActivity;
@@ -39,11 +46,14 @@ import com.metaio.sdk.jni.Vector3d;
 import com.metaio.tools.io.AssetsManager;
 import com.parse.ParseException;
 
-public class ARActivity extends ARViewActivity {
+public class ARActivity extends ARViewActivity implements LocationListener,
+    GooglePlayServicesClient.ConnectionCallbacks,
+    GooglePlayServicesClient.OnConnectionFailedListener {
 
   protected static final String TAG = ARActivity.class.getSimpleName();
   private IAnnotatedGeometriesGroup mAnnotatedGeometriesGroup;
-
+  // Stores the current instantiation of the location client in this object
+  private LocationClient mLocationClient;
   private MyAnnotatedGeometriesGroupCallback mAnnotatedGeometriesGroupCallback;
 
   /**
@@ -53,11 +63,7 @@ public class ARActivity extends ARViewActivity {
   private List<Restaurant> tempResult = new ArrayList<Restaurant>();
   private List<Restaurant> mResult = new ArrayList<Restaurant>();
   private List<LLACoordinate> LLCoor = new ArrayList<LLACoordinate>();
-  private GPSActivity gpsAct;
-  private IGeometry mKenji;
-  private IGeometry mAdrian;
-  private IGeometry mAchai;
-
+  private HashMap<IGeometry, Restaurant> markerGeo = new HashMap<IGeometry, Restaurant>();
   private IRadar mRadar;
 
   @Override
@@ -68,8 +74,32 @@ public class ARActivity extends ARViewActivity {
     boolean result = metaioSDK.setTrackingConfiguration("GPS", false);
     MetaioDebug.log("Tracking data loaded: " + result);
     Log.v(TAG, "Executing getDataTask");
-    gpsAct = new GPSActivity(this);
+    mLocationClient = new LocationClient(this, this, this);
     new getData().execute();
+  }
+
+  /*
+   * Called when the Activity is restarted, even before it becomes visible.
+   */
+  @Override
+  public void onStart() {
+
+    super.onStart();
+
+    /*
+     * Connect the client. Don't re-start any requests here; instead, wait for onResume()
+     */
+    mLocationClient.connect();
+
+  }
+
+  @Override
+  public void onStop() {
+
+    // After disconnect() is called, the client is considered "dead".
+    mLocationClient.disconnect();
+
+    super.onStop();
   }
 
   @Override
@@ -103,11 +133,6 @@ public class ARActivity extends ARViewActivity {
         heading = (float) (-Math.atan2(v.getY(), v.getX()) - Math.PI / 2.0);
       }
 
-      // IGeometry geos[] = new IGeometry[] { mKenji, mAchai, mAdrian };
-      //
-      // for (int i = 0; i < mResult.size(); i++) {
-      //
-      // }
       Rotation rot = new Rotation((float) (Math.PI / 2.0), 0.0f, -heading);
       for (IGeometry geo : mGeoObject) {
         if (geo != null) {
@@ -171,7 +196,7 @@ public class ARActivity extends ARViewActivity {
 
         mGeoObject.add(k, createPOIGeometry(LLCoor.get(k)));
         mAnnotatedGeometriesGroup.addGeometry(mGeoObject.get(k), tempResult.get(i).getName());
-
+        markerGeo.put(mGeoObject.get(k), tempResult.get(i));
         // add geometries to the radar
         mRadar.add(mGeoObject.get(k));
         k++;
@@ -197,7 +222,14 @@ public class ARActivity extends ARViewActivity {
   @Override
   protected void onGeometryTouched(final IGeometry geometry) {
     MetaioDebug.log("Geometry selected: " + geometry);
-
+    Log.v(TAG, "Object touched!");
+    if (markerGeo.containsKey(geometry)) {
+      Intent intent = new Intent(ARActivity.this, RestaurantProfileActivity.class);
+      intent.putExtra("restObject", markerGeo.get(geometry));
+      intent.putExtra("restId", markerGeo.get(geometry).getObjectId());
+      intent.putExtra("restName", markerGeo.get(geometry).getName());
+      startActivity(intent);
+    }
     mSurfaceView.queueEvent(new Runnable() {
 
       @Override
@@ -322,7 +354,6 @@ public class ARActivity extends ARViewActivity {
       try {
         // Loading map
         Log.v(TAG, "Validating Restaurant Distance to be shown");
-        Log.v(TAG, "Current Loc = " + gpsAct.getLatitude() + " && " + gpsAct.getLongitude());
 
       } catch (Exception e) {
         e.printStackTrace();
@@ -332,8 +363,10 @@ public class ARActivity extends ARViewActivity {
 
   public double countDist(double lat, double lng) {
 
-    double currentLatitude = gpsAct.getLatitude();
-    double currentLongitude = gpsAct.getLongitude();
+    Location currentLocation = mLocationClient.getLastLocation();
+
+    double currentLatitude = LocationUtils.getLat(this, currentLocation).getLat();
+    double currentLongitude = LocationUtils.getLat(this, currentLocation).getLong();
 
     double endLatitude = lat;
     double endLongitude = lng;
@@ -353,6 +386,30 @@ public class ARActivity extends ARViewActivity {
     }
 
     return values;
+  }
+
+  @Override
+  public void onConnectionFailed(ConnectionResult arg0) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void onConnected(Bundle arg0) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void onDisconnected() {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void onLocationChanged(Location arg0) {
+    // TODO Auto-generated method stub
+
   }
 
 }

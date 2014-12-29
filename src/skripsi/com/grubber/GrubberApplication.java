@@ -28,8 +28,10 @@ import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.parse.PushService;
 
 public class GrubberApplication extends Application {
   public static final String TAG = GrubberApplication.class.getSimpleName();
@@ -50,12 +52,17 @@ public class GrubberApplication extends Application {
     mTask = new AssetsExtracter();
     mTask.execute(0);
 
+    PushService.setDefaultPushCallback(this, GrubberActivity.class);
+    ParseInstallation.getCurrentInstallation().saveInBackground();
+
   }
 
   private void initializeParse() {
     // ParseObject subclass registration
     ParseObject.registerSubclass(Restaurant.class);
     ParseObject.registerSubclass(Activity.class);
+    // enabling local data store
+    Parse.enableLocalDatastore(this);
     // initialize Parse
     Parse.initialize(this, Utility.getMetadata(this, GrubberApplication.PARSE_APP_ID),
         Utility.getMetadata(this, GrubberApplication.PARSE_CLIENT_KEY));

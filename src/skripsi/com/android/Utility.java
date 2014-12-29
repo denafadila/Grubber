@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -60,6 +61,19 @@ public class Utility {
       result = e.toString().trim();
     }
     return result;
+  }
+
+  public static String convertStringToRegex(String originalText) {
+    StringBuilder sb = new StringBuilder();
+    if (originalText != null) {
+      sb.append("(");
+      String[] strings = originalText.split("\\s");
+      for (String s : strings) {
+        sb.append("(?=.*?(").append(Pattern.quote(s)).append("))");
+      }
+      sb.append(")+");
+    }
+    return sb.toString();
   }
 
   public static String getMetadata(Context context, String key) {
