@@ -9,6 +9,7 @@ public class AuditableParseObject extends ParseObject {
   public static final String UPDATED_AT = "updatedAt";
   public static final String UPDATED_BY = "updatedBy";
   public static final String OBJECT_ID = "objectId";
+  public static final String RESTO_ID = "restoId";
 
   public void setCreatedBy(User up) {
     put(CREATED_BY, up.getParseUser());
@@ -24,6 +25,10 @@ public class AuditableParseObject extends ParseObject {
 
   public User getUpdatedBy() {
     return (User) get(UPDATED_BY);
+  }
+
+  public Restaurant getResoId() {
+    return (Restaurant) get(RESTO_ID);
   }
 
 }

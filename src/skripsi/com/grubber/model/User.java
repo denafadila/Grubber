@@ -9,9 +9,10 @@ public class User {
   public static final String FULL_NAME = "fullName";
   public static final String EMAIL = "email";
   public static final String PARSE_USER = "parseUser";
+  public static final String objectId = "objectId";
   public static final String USERNAME = "username";
   public static final String ABOUT_ME = "aboutMe";
-  public static final String PHOTO = "photo";
+  public static final String PHOTO = "profilePic";
   public static final String PHOTO_THUMBNAIL = "photoThumbnail";
 
   public static final String STALK_COUNTER = "stalkCounter";

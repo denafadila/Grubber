@@ -4,6 +4,7 @@ import skripsi.com.grubber.R;
 import skripsi.com.grubber.model.Restaurant;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ConfigurationInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.widget.ListView;
+
+import com.facebook.Session;
 
 public class RestaurantProfileActivity extends FragmentActivity {
   private static final String TAG = RestaurantProfileActivity.class.getSimpleName();
@@ -45,6 +48,12 @@ public class RestaurantProfileActivity extends FragmentActivity {
     Log.v(TAG, "Name = " + REST_NAME);
     showFragment(PROFILE_TAB, false);
 
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
   }
 
   public void showFragment(int fragmentIndex, boolean addToBackStack) {

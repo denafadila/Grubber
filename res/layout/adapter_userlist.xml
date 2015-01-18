@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="beforeDescendants"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingTop="7dp" >
+
+    <View
+        android:id="@+id/notif_line"
+        android:layout_width="4dp"
+        android:layout_height="match_parent"
+        android:background="#c2c2c2" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/list_notif"
+        android:descendantFocusability="afterDescendants"
+        android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="10dp" >
+
+        <com.pkmmte.circularimageview.CircularImageView
+            android:id="@+id/profilePic"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="13dp" />
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/profilePic"
+            android:textColor="#2e2a2a"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/aboutme"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/username"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/profilePic"
+            android:textColor="#808080"
+            android:textSize="14sp" />
+
+        <ToggleButton
+            android:id="@+id/btnfollow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:textOn="Stalk"
+            android:textOff="Leave"
+            android:gravity="center"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+</LinearLayout>

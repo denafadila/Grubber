@@ -107,6 +107,70 @@ public class ActivityDao {
     return result;
   }
 
+  public static List<Activity> getUserRev(User user) throws ParseException {
+
+    ParseQuery<Activity> pq = ParseQuery.getQuery(Activity.class);
+    pq.whereEqualTo(AuditableParseObject.CREATED_BY, user.getParseUser());
+    pq.whereEqualTo(Activity.TYPE, Activity.TYPE_REVIEW);
+
+    // include only supported types
+    pq.setLimit(10);
+    pq.orderByDescending(AuditableParseObject.CREATED_AT);
+    pq.include(AuditableParseObject.CREATED_BY);
+
+    List<Activity> result = null;
+    try {
+      result = pq.find();
+      Log.d(TAG, String.format("getUserData found %s records", result == null ? 0 : result.size()));
+    } catch (ParseException e) {
+      Log.w(TAG, "Problem in retrieving User Data", e);
+      throw e;
+    }
+    return result;
+  }
+
+  public static List<Activity> getUserStalk(User user) throws ParseException {
+    ParseQuery<Activity> pq1 = ParseQuery.getQuery(Activity.class);
+    pq1.whereEqualTo(Activity.TYPE, Activity.TYPE_STALK);
+    pq1.whereEqualTo(Activity.CREATED_BY, user.getParseUser());
+
+    // include only supported types
+    pq1.setLimit(10);
+    pq1.orderByDescending(AuditableParseObject.CREATED_AT);
+    pq1.include(AuditableParseObject.CREATED_BY);
+
+    List<Activity> result = null;
+    try {
+      result = pq1.find();
+      Log.d(TAG, String.format("getUserData found %s records", result == null ? 0 : result.size()));
+    } catch (ParseException e) {
+      Log.w(TAG, "Problem in retrieving User Data", e);
+      throw e;
+    }
+    return result;
+  }
+
+  public static List<Activity> getUserStalked(User user) throws ParseException {
+    ParseQuery<Activity> pq1 = ParseQuery.getQuery(Activity.class);
+    pq1.whereEqualTo(Activity.TYPE, Activity.TYPE_STALK);
+    pq1.whereEqualTo(Activity.TARGET_USER_PROFILE, user.getParseUser());
+
+    // include only supported types
+    pq1.setLimit(10);
+    pq1.orderByDescending(AuditableParseObject.CREATED_AT);
+    pq1.include(AuditableParseObject.CREATED_BY);
+
+    List<Activity> result = null;
+    try {
+      result = pq1.find();
+      Log.d(TAG, String.format("getUserData found %s records", result == null ? 0 : result.size()));
+    } catch (ParseException e) {
+      Log.w(TAG, "Problem in retrieving User Data", e);
+      throw e;
+    }
+    return result;
+  }
+
   public static List<Restaurant> getTrendingByRate() throws ParseException {
     // posting by self
 
@@ -151,6 +215,28 @@ public class ActivityDao {
     return result;
   }
 
+  public static List<Restaurant> getTrendingByPop() throws ParseException {
+    // posting by self
+
+    ParseQuery<Restaurant> pq = ParseQuery.getQuery(Restaurant.class);
+
+    // include only supported types
+    pq.setLimit(10);
+    pq.orderByDescending(Restaurant.CASH);
+    pq.include(AuditableParseObject.CREATED_BY);
+
+    List<Restaurant> result = null;
+    try {
+      result = pq.find();
+      Log.d(TAG,
+          String.format("getTrendByRate found %s records", result == null ? 0 : result.size()));
+    } catch (ParseException e) {
+      Log.w(TAG, "Problem in retrieving Restaurant", e);
+      throw e;
+    }
+    return result;
+  }
+
   public static int getRevCount(String restId) throws ParseException {
     int result = 0;
     ParseQuery<Activity> pq = ParseQuery.getQuery(Activity.class);
@@ -167,42 +253,43 @@ public class ActivityDao {
     return result;
   }
 
-  public static List<Activity> getPostList(User userFrom) throws ParseException {
-    // posting by self
-    ParseQuery<Activity> pqMine = ParseQuery.getQuery(Activity.class);
-    pqMine.whereEqualTo(Activity.TYPE, Activity.TYPE_REVIEW);
-    pqMine.whereEqualTo(AuditableParseObject.CREATED_BY, userFrom.getParseUser());
+  public static List<Activity> getPostList(User up) throws ParseException {
+    ParseQuery<Activity> queryStalk = new ParseQuery<Activity>("Activity");
+    queryStalk.whereEqualTo("type", "S");
+    queryStalk.whereEqualTo("createdBy", up.getParseUser());
 
-    // posting by followed person
-    ParseQuery<Activity> pqFollowedPerson = ParseQuery.getQuery(Activity.class);
-    pqFollowedPerson.whereEqualTo(Activity.CREATED_BY, userFrom.getParseUser());
-    pqFollowedPerson.whereEqualTo(Activity.TYPE, Activity.TYPE_STALK);
+    ParseQuery<Activity> queryUser = new ParseQuery<Activity>("Activity");
+    queryUser.whereEqualTo("type", "R");
+    queryUser.whereEqualTo("createdBy", up.getParseUser());
 
-    ParseQuery<Activity> pqFollowedPersonPost = ParseQuery.getQuery(Activity.class);
-    pqFollowedPersonPost.whereEqualTo(Activity.TYPE, Activity.TYPE_REVIEW);
-    pqFollowedPersonPost.whereMatchesKeyInQuery(Activity.CREATED_BY, Activity.TARGET_USER_PROFILE,
-        pqFollowedPerson);
+    ParseQuery<Activity> queryStalking = new ParseQuery<Activity>("Activity");
+    queryStalking.whereEqualTo("type", "R");
+    queryStalking.whereMatchesKeyInQuery("createdBy", "targetUserProfile", queryStalk);
+    /*
+     * query.include("createdBy"); query.include("restoId"); query.orderByDescending("createdAt");
+     */
 
-    // consolidate
-    ArrayList<ParseQuery<Activity>> queries = new ArrayList<ParseQuery<Activity>>();
-    queries.add(pqMine);
-    queries.add(pqFollowedPersonPost);
-    // consolidated query
-    ParseQuery<Activity> pq = ParseQuery.or(queries);
-    // include only supported types
-    pq.whereContainedIn(Activity.TYPE, Arrays.asList(Activity.TYPES));
-    pq.setLimit(10);
-    pq.orderByDescending(AuditableParseObject.CREATED_AT);
-    pq.include(AuditableParseObject.CREATED_BY);
+    List<ParseQuery<Activity>> queryList = new ArrayList<ParseQuery<Activity>>();
+    queryList.add(queryUser);
+    queryList.add(queryStalking);
+    Log.d("or", String.format("get %s records", queryList == null ? 0 : queryList.size()));
+
+    ParseQuery<Activity> mainQuery = ParseQuery.or(queryList);
+    mainQuery.orderByDescending("createdAt");
+    mainQuery.include("createdBy");
+    mainQuery.include("restoId");
 
     List<Activity> result = null;
     try {
-      result = pq.find();
-      Log.d(TAG, String.format("getTimeline found %s records", result == null ? 0 : result.size()));
+      result = mainQuery.find();
+      Log.d(TAG,
+          String.format("getTimelinePostList found %s records", result == null ? 0 : result.size()));
+
     } catch (ParseException e) {
-      Log.w(TAG, "Problem in retrieving timeline", e);
+      Log.v(TAG, "Problem in getting posts", e);
       throw e;
     }
+
     return result;
   }
 
@@ -214,13 +301,13 @@ public class ActivityDao {
 
     // posting by followed person
     ParseQuery<Activity> pqFollowedPerson = ParseQuery.getQuery(Activity.class);
-    pqFollowedPerson.whereEqualTo(Activity.CREATED_BY, userFrom.getParseUser());
+    pqFollowedPerson.whereEqualTo(AuditableParseObject.CREATED_BY, userFrom.getParseUser());
     pqFollowedPerson.whereEqualTo(Activity.TYPE, Activity.TYPE_STALK);
 
     ParseQuery<Activity> pqFollowedPersonPost = ParseQuery.getQuery(Activity.class);
     pqFollowedPersonPost.whereEqualTo(Activity.TYPE, Activity.TYPE_REVIEW);
-    pqFollowedPersonPost.whereMatchesKeyInQuery(Activity.CREATED_BY, Activity.TARGET_USER_PROFILE,
-        pqFollowedPerson);
+    pqFollowedPersonPost.whereMatchesKeyInQuery(AuditableParseObject.CREATED_BY,
+        Activity.TARGET_USER_PROFILE, pqFollowedPerson);
 
     // consolidate
     ArrayList<ParseQuery<Activity>> queries = new ArrayList<ParseQuery<Activity>>();
@@ -295,7 +382,7 @@ public class ActivityDao {
   public static List<Activity> getNotifications(User up, String count) throws ParseException {
     ParseQuery<Activity> query = new ParseQuery<Activity>("Activity");
     query.whereNotEqualTo("type", "R");
-    query.whereNotEqualTo(Activity.CREATED_BY, up.getParseUser());
+    query.whereNotEqualTo(AuditableParseObject.CREATED_BY, up.getParseUser());
     query.whereEqualTo("targetUserProfile", up.getParseUser());
     if (count.equals("yes"))
       query.whereEqualTo("status", "Unread");
@@ -351,7 +438,7 @@ public class ActivityDao {
 
     ParseQuery<Activity> pqFindAct = new ParseQuery<Activity>("Activity");
 
-    pqFindAct.whereEqualTo(Activity.CREATED_BY, curr.getParseUser());
+    pqFindAct.whereEqualTo(AuditableParseObject.CREATED_BY, curr.getParseUser());
     pqFindAct.whereEqualTo(Activity.TYPE, Activity.TYPE_STALK);
     List<Activity> result = null;
     try {
@@ -369,7 +456,7 @@ public class ActivityDao {
     List<ParseObject> results = new ArrayList<ParseObject>();
     // find the existing FollowPerson for removal
     ParseQuery<Activity> pq = ParseQuery.getQuery(Activity.class);
-    pq.whereEqualTo(Activity.CREATED_BY, up.getParseUser());
+    pq.whereEqualTo(AuditableParseObject.CREATED_BY, up.getParseUser());
     pq.whereEqualTo(Activity.TYPE, Activity.TYPE_STALK);
     pq.whereEqualTo(Activity.TARGET_USER_PROFILE, personToUnfollow.getParseUser());
     List<Activity> existingFollowPeople = pq.find();

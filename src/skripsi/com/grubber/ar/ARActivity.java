@@ -22,7 +22,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextPaint;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -59,6 +63,11 @@ public class ARActivity extends ARViewActivity implements LocationListener,
   /**
    * Geometries
    */
+
+  private List<IGeometry> metaioManList = new ArrayList<IGeometry>();
+
+  String trackingConfigFile;
+
   private List<IGeometry> mGeoObject = new ArrayList<IGeometry>();
   private List<Restaurant> tempResult = new ArrayList<Restaurant>();
   private List<Restaurant> mResult = new ArrayList<Restaurant>();
@@ -117,6 +126,8 @@ public class ARActivity extends ARViewActivity implements LocationListener,
     super.onDestroy();
   }
 
+  // DRAW ITEM ON AUGMENTED SURFACE
+
   @Override
   public void onDrawFrame() {
     if (metaioSDK != null && mSensors != null) {
@@ -145,12 +156,14 @@ public class ARActivity extends ARViewActivity implements LocationListener,
   }
 
   public void onButtonClick(View v) {
-    finish();
+    Toast.makeText(getBaseContext(), "Loading map...", Toast.LENGTH_LONG).show();
+    Intent intent = new Intent(getBaseContext(), GMapActivity.class);
+    startActivity(intent);
   }
 
   @Override
   protected int getGUILayout() {
-    return R.layout.tutorial_location_based_ar;
+    return R.layout.activity_ar;
   }
 
   @Override
@@ -175,9 +188,9 @@ public class ARActivity extends ARViewActivity implements LocationListener,
     // create radar
     mRadar = metaioSDK.createRadar();
     mRadar.setBackgroundTexture(AssetsManager.getAssetPathAsFile(getApplicationContext(),
-        "TutorialLocationBasedAR/Assets/radar.png"));
+        "TutorialLocationBasedAR/Assets/radar2.png"));
     mRadar.setObjectsDefaultTexture(AssetsManager.getAssetPathAsFile(getApplicationContext(),
-        "TutorialLocationBasedAR/Assets/yellow.png"));
+        "TutorialLocationBasedAR/Assets/grub.png"));
     mRadar.setRelativeToScreen(IGeometry.ANCHOR_TL);
 
     int k = 0;
@@ -278,7 +291,7 @@ public class ARActivity extends ARViewActivity implements LocationListener,
       float distance = (float) MetaioCloudUtils.getDistanceBetweenTwoCoordinates(location,
           mSensors.getLocation());
       // Bitmap thumbnail to be shown in annotation
-      Bitmap thumbnail = BitmapFactory.decodeResource(getResources(), R.drawable.ic_pp);
+      Bitmap thumbnail = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_new);
       try {
         texture = ARELInterpreterAndroidJava.getAnnotationImageForPOI(title, title, distance, "5",
             thumbnail, null, metaioSDK.getRenderSize(), ARActivity.this, mPaint,
@@ -353,6 +366,7 @@ public class ARActivity extends ARViewActivity implements LocationListener,
       Log.v(TAG, "Finished getting restaurant list!");
       try {
         // Loading map
+        Toast.makeText(getBaseContext(), "Data Loaded, getting more...", Toast.LENGTH_LONG).show();
         Log.v(TAG, "Validating Restaurant Distance to be shown");
 
       } catch (Exception e) {
@@ -412,4 +426,26 @@ public class ARActivity extends ARViewActivity implements LocationListener,
 
   }
 
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    // Inflate the menu items for use in the action bar
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.ar, menu);
+    return super.onCreateOptionsMenu(menu);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    // Handle presses on the action bar items
+    switch (item.getItemId()) {
+    case R.id.action_refresh:
+      // Refresh coordinates
+      return true;
+    case R.id.action_back:
+      finish();
+      return true;
+    default:
+      return super.onOptionsItemSelected(item);
+    }
+  }
 }

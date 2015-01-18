@@ -2,6 +2,7 @@ package skripsi.com.grubber.timeline;
 
 import java.util.List;
 
+import skripsi.com.grubber.BaseActivity;
 import skripsi.com.grubber.MainActivity;
 import skripsi.com.grubber.R;
 import skripsi.com.grubber.ar.ARActivity;
@@ -9,17 +10,12 @@ import skripsi.com.grubber.dao.ActivityDao;
 import skripsi.com.grubber.model.Activity;
 import skripsi.com.grubber.model.User;
 import skripsi.com.grubber.notifications.Notifications;
-import skripsi.com.grubber.profile.ProfileActivity;
 import skripsi.com.grubber.profile.ProfileFragment;
-import skripsi.com.grubber.trending.TrendingActivity;
 import skripsi.com.grubber.trending.TrendingFragment;
-import android.app.ActionBar;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -27,16 +23,17 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TabHost;
-import android.widget.TextView;
+import android.widget.TabWidget;
+import android.widget.Toast;
 
 import com.parse.ParseException;
+import com.readystatesoftware.viewbadger.BadgeView;
 
-public class TimelineActivity extends FragmentActivity {
+public class TimelineActivity extends BaseActivity {
 
-  public static final String USER_OBJECT_ID = "objectId";
-  public static final String USER_USERNAME = "username";
   /* Tab Identifiers */
   static String timeline_tab = "Timeline";
   TabHost tabhost;
@@ -44,10 +41,14 @@ public class TimelineActivity extends FragmentActivity {
   TrendingFragment trending;
   MainActivity MapList;
   ARActivity ar_tab;
-  NavigationARFragment nav_ar;
   Notifications notif;
+  ProfileFragment profile;
   ProfileFragment prof;
   List<Activity> mResult;
+
+  TabWidget tabs;
+  BadgeView badge;
+  int count_notif;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -55,43 +56,44 @@ public class TimelineActivity extends FragmentActivity {
     setContentView(R.layout.timeline_main_tab);
 
     /* Action Bar */
-    ActionBar actionBar = getActionBar();
-    actionBar.setDisplayShowHomeEnabled(false);
-    actionBar.setDisplayShowTitleEnabled(false);
-
-    LayoutInflater inflater = LayoutInflater.from(this);
-    View actionBar_view = inflater.inflate(R.layout.action_bar, null);
-
-    Typeface font_style = Typeface.createFromAsset(getAssets(), "fonts/Bireun.ttf");
-    TextView title_app = (TextView) actionBar_view.findViewById(R.id.title_app);
-    title_app.setTypeface(font_style);
-
-    actionBar.setCustomView(actionBar_view);
-    actionBar.setDisplayShowCustomEnabled(true);
+    setTitle("GRUBBER");
+    show();
 
     /* Tab */
     timeline = new TimelineListPostActivity();
     trending = new TrendingFragment();
     ar_tab = new ARActivity();
-    nav_ar = new NavigationARFragment();
     MapList = new MainActivity();
     notif = new Notifications();
-    prof = new ProfileFragment();
+    profile = new ProfileFragment();
 
     tabhost = (TabHost) findViewById(android.R.id.tabhost);
     tabhost.setOnTabChangedListener(listener);
     tabhost.setup();
 
-    new RemoteDataTask().execute();
     initializeTab();
-
+    new RemoteDataTask().execute();
   }
+
+  /*
+   * public void setActionBar() { ActionBar actionBar = getActionBar();
+   * actionBar.setDisplayShowHomeEnabled(false); actionBar.setDisplayShowTitleEnabled(false);
+   * 
+   * LayoutInflater inflater = LayoutInflater.from(this); View actionBar_view =
+   * inflater.inflate(R.layout.action_bar, null);
+   * 
+   * //Typeface font_style = Typeface.createFromAsset(getAssets(), "fonts/jaapokki_regular.ttf");
+   * TextView title_app = (TextView) actionBar_view.findViewById(R.id.title_app);
+   * //title_app.setTypeface(font_style); title_app.setText("GRUBBER");
+   * 
+   * actionBar.setCustomView(actionBar_view); actionBar.setDisplayShowCustomEnabled(true); }
+   */
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
     getMenuInflater().inflate(R.menu.main, menu);
-    return true;
+    return false;
   }
 
   /* Initialize the tabs and set views and identifiers for the tabs */
@@ -108,7 +110,7 @@ public class TimelineActivity extends FragmentActivity {
         return findViewById(android.R.id.tabcontent);
       }
     });
-    spec.setIndicator(createTabView(R.drawable.home));
+    spec.setIndicator(createTabView(R.drawable.home, "Grubber"));
     tabhost.addTab(spec);
 
     spec = tabhost.newTabSpec("Trending");
@@ -120,10 +122,10 @@ public class TimelineActivity extends FragmentActivity {
         return findViewById(android.R.id.tabcontent);
       }
     });
-    spec.setIndicator(createTabView(R.drawable.trending));
+    spec.setIndicator(createTabView(R.drawable.trending, "Trending"));
     tabhost.addTab(spec);
 
-    spec = tabhost.newTabSpec("NavAR");
+    spec = tabhost.newTabSpec("Grub!");
     spec.setContent(new TabHost.TabContentFactory() {
 
       @Override
@@ -132,12 +134,9 @@ public class TimelineActivity extends FragmentActivity {
         return findViewById(android.R.id.tabcontent);
       }
     });
-    spec.setIndicator(createTabView(R.drawable.ar));
+    spec.setIndicator(createTabView(R.drawable.ar, "Grub!"));
     tabhost.addTab(spec);
 
-    // LayoutInflater inflater = LayoutInflater.from(this);
-    // View view = inflater.inflate(R.layout.tab_icon, null);
-    // final TextView txtCount = (TextView) view.findViewById(R.id.txtCount);
     spec = tabhost.newTabSpec("Notifications");
     spec.setContent(new TabHost.TabContentFactory() {
 
@@ -147,7 +146,7 @@ public class TimelineActivity extends FragmentActivity {
         return findViewById(android.R.id.tabcontent);
       }
     });
-    spec.setIndicator(createTabView(R.drawable.notif));
+    spec.setIndicator(createTabView(R.drawable.notif, "Notification"));
     tabhost.addTab(spec);
 
     spec = tabhost.newTabSpec("Profile");
@@ -159,8 +158,27 @@ public class TimelineActivity extends FragmentActivity {
         return findViewById(android.R.id.tabcontent);
       }
     });
-    spec.setIndicator(createTabView(R.drawable.profile));
+    spec.setIndicator(createTabView(R.drawable.userprofile, "Profile"));
     tabhost.addTab(spec);
+
+    tabs = (TabWidget) findViewById(android.R.id.tabs);
+    badge = new BadgeView(this, tabs, 3);
+
+    tabhost.getTabWidget().getChildAt(0).setOnClickListener(new OnClickListener() {
+
+      @Override
+      public void onClick(View arg0) {
+        // TODO Auto-generated method stub
+        if (tabhost.getCurrentTab() != 0) {
+          tabhost.setCurrentTab(0);
+        } else {
+          Log.d("Timeline", "!!!!Clicked");
+          timeline.scrollToUp();
+        }
+      }
+    });
+
+    Log.d("count_notif", String.format("%s", count_notif));
 
   }
 
@@ -176,20 +194,16 @@ public class TimelineActivity extends FragmentActivity {
       if (tabId.equals("Timeline")) {
         pushFragments(tabId, timeline);
       } else if (tabId.equals("Trending")) {
-        // pushFragments(tabId, trending);
-        Intent intent = new Intent(getBaseContext(), TrendingActivity.class);
+        pushFragments(tabId, trending);
+      } else if (tabId.equals("Grub!")) {
+        Toast.makeText(getBaseContext(), "Loading Augmented Reality Modules...", Toast.LENGTH_LONG)
+            .show();
+        Intent intent = new Intent(getBaseContext(), ARActivity.class);
         startActivity(intent);
-      } else if (tabId.equals("NavAR")) {
-        pushFragments(tabId, nav_ar);
       } else if (tabId.equals("Notifications")) {
         pushFragments(tabId, notif);
-      } else {
-        // pushFragments(tabId, prof);
-        Intent intent = new Intent(getBaseContext(), ProfileActivity.class);
-        intent.putExtra(USER_OBJECT_ID, User.getCurrentUser().getObjectId());
-        intent.putExtra(USER_USERNAME, User.getCurrentUser().getUserName());
-        startActivity(intent);
-      }
+      } else
+        pushFragments(tabId, profile);
     }
   };
 
@@ -198,16 +212,25 @@ public class TimelineActivity extends FragmentActivity {
     FragmentManager manager = getSupportFragmentManager();
     FragmentTransaction ft = manager.beginTransaction();
 
-    ft.replace(android.R.id.tabcontent, fragment);
+    if (fragment.isAdded()) {
+      ft.show(fragment);
+    } else {
+      ft.replace(android.R.id.tabcontent, fragment);
+    }
+    setTitle(tabId);
+    show();
     ft.commit();
   }
 
   /* returns the tab view i.e. the tab icon */
-  private View createTabView(final int id) {
+  private View createTabView(final int id, final String name_tab) {
     // TODO Auto-generated method stub
     View view = LayoutInflater.from(this).inflate(R.layout.tab_icon, null);
     ImageView image_view = (ImageView) view.findViewById(R.id.icon_image);
     image_view.setImageDrawable(getResources().getDrawable(id));
+    /*
+     * TextView text_tab = (TextView) view.findViewById(R.id.text_tab); text_tab.setText(name_tab);
+     */
 
     return view;
   }
@@ -218,13 +241,15 @@ public class TimelineActivity extends FragmentActivity {
     // automatically handle clicks on the Home/Up button, so long
     // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
-    /*
-     * if (id == R.id.action_settings) { return true; }
-     */
+
+    if (id == R.id.action_settings) {
+      return false;
+    }
+
     return super.onOptionsItemSelected(item);
   }
 
-  private class RemoteDataTask extends AsyncTask<Void, Void, Void> {
+  public class RemoteDataTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPreExecute() {
@@ -237,7 +262,8 @@ public class TimelineActivity extends FragmentActivity {
       // TODO Auto-generated method stub
       try {
         mResult = ActivityDao.getNotifications(User.getCurrentUser(), "yes");
-
+        Log.d("Jumlah notif1", String.format("getNotifications found %s records",
+            mResult == null ? 0 : mResult.size()));
       } catch (ParseException e) {
         Log.v("pas awal banget", "Failed to get post list for current user");
         e.printStackTrace();
@@ -247,9 +273,16 @@ public class TimelineActivity extends FragmentActivity {
 
     @Override
     protected void onPostExecute(Void result) {
-      int count_notif = mResult.size();
+      count_notif = mResult.size();
       Log.d("Jumlah notif",
-          String.format("getNotifications found %s records", result == null ? 0 : count_notif));
+          String.format("getNotifications found %s records", mResult == null ? 0 : count_notif));
+      if (count_notif != 0) {
+        badge.setText(String.valueOf(count_notif));
+        badge.setTextSize(11);
+        badge.setBadgeMargin(35, 0);
+        badge.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
+        badge.show();
+      }
     }
   }
 

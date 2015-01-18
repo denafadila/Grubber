@@ -1,17 +1,26 @@
 package skripsi.com.grubber;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import skripsi.com.android.Utility;
 import skripsi.com.android.widget.Validate;
 import skripsi.com.grubber.dao.UserDao;
+import skripsi.com.grubber.model.User;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
@@ -21,11 +30,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -33,27 +42,40 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import eu.janmuller.android.simplecropimage.CropImage;
+
 public class RegisterFragment extends Fragment {
   private static final int PHOTO_REQUEST_CODE = 678;
   private static final String TAG = RegisterFragment.class.getSimpleName();
 
   private OnFragmentInteractionListener mListener;
 
-  private ImageButton mPhoto = null;
+  // private ImageButton mPhoto = null;
   private byte[] photoBitmap = null;
   private Bitmap photoThumbnail = null;
   private EditText mEmail = null;
-  private TextView tvPass = null;
-  private TextView tvPass2 = null;
+  // private TextView tvPass = null;
+  // private TextView tvPass2 = null;
   private EditText mPassword = null;
   private EditText mPassword2 = null;
   private EditText mUsername = null;
   private EditText mFullName = null;
   private EditText mAboutMe = null;
-  private CheckBox mAgree = null;
-  private TextView mTnC = null;
+  private ImageView gambar = null;
+  // private CheckBox mAgree = null;
+  // private TextView mTnC = null;
+  private Button btnSubmit = null;
+  private Button btnCancel = null;
+  // private ProgressBarDialogFragment mProgressDialog = null;
   private Bundle bundle;
   private boolean mIsSubmitting = false;
+
+  public static final int REQUEST_CODE_CROP_IMAGE = 0x3;
+  private File mFileTemp;
+  public static final String TEMP_PHOTO_FILE_NAME = "temp_photo.jpg";
+  Bitmap bitmap;
+
+  private ProgressBarDialogFragment mProgressDialog = null;
 
   protected boolean validateForm() {
     boolean result = false;
@@ -71,6 +93,7 @@ public class RegisterFragment extends Fragment {
     super.onCreate(savedInstanceState);
     setRetainInstance(true);
     setHasOptionsMenu(true);
+    Utility.lockScreenOrientation(getActivity());
     if (ParseUser.getCurrentUser() != null) {
       getActivity().supportInvalidateOptionsMenu();
     }
@@ -81,17 +104,24 @@ public class RegisterFragment extends Fragment {
     // Inflate the layout for this fragment
     View view = inflater.inflate(R.layout.fragment_register, container, false);
 
-    mPhoto = (ImageButton) view.findViewById(R.id.ibRegistrationPhoto);
-    mPhoto.setOnClickListener(new View.OnClickListener() {
+    mProgressDialog = new ProgressBarDialogFragment();
+    mProgressDialog.setCancelable(false);
+
+    /*
+     * mProgressDialog = new ProgressBarDialogFragment(); mProgressDialog.setCancelable(false);
+     */
+    // mPhoto = (ImageButton) view.findViewById(R.id.ibRegistrationPhoto);
+    gambar = (ImageView) view.findViewById(R.id.gambar);
+    gambar.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         setPhoto();
       }
     });
-    mPhoto.setOnLongClickListener(new View.OnLongClickListener() {
+    gambar.setOnLongClickListener(new View.OnLongClickListener() {
       @Override
       public boolean onLongClick(View v) {
-        mPhoto.setImageResource(R.drawable.ic_launcher_new);
+        gambar.setImageResource(R.drawable.ic_launcher_new);
         if (photoBitmap != null) {
           photoBitmap = null;
         }
@@ -113,8 +143,8 @@ public class RegisterFragment extends Fragment {
         }
       }
     });
-    tvPass = (TextView) view.findViewById(R.id.tvRegistrationPassword);
-    tvPass2 = (TextView) view.findViewById(R.id.tvRegistrationPassword2);
+    // tvPass = (TextView) view.findViewById(R.id.tvRegistrationPassword);
+    // tvPass2 = (TextView) view.findViewById(R.id.tvRegistrationPassword2);
     mPassword = (EditText) view.findViewById(R.id.etRegistrationPassword);
     mPassword.setFilters(new InputFilter[] { new LengthFilter(33) });
     mPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -169,6 +199,33 @@ public class RegisterFragment extends Fragment {
       }
     });
 
+    btnSubmit = (Button) view.findViewById(R.id.btnSubmit);
+    btnSubmit.setOnClickListener(new OnClickListener() {
+
+      @Override
+      public void onClick(View arg0) {
+        // TODO Auto-generated method stub
+        submitRegistration();
+      }
+    });
+
+    btnCancel = (Button) view.findViewById(R.id.btnCancel);
+    btnCancel.setOnClickListener(new OnClickListener() {
+
+      @Override
+      public void onClick(View v) {
+        // TODO Auto-generated method stub
+        getActivity().onBackPressed();
+      }
+    });
+
+    String state = Environment.getExternalStorageState();
+    if (Environment.MEDIA_MOUNTED.equals(state)) {
+      mFileTemp = new File(Environment.getExternalStorageDirectory(), TEMP_PHOTO_FILE_NAME);
+    } else {
+      mFileTemp = new File(getActivity().getFilesDir(), TEMP_PHOTO_FILE_NAME);
+    }
+
     updateView();
     return view;
   }
@@ -187,13 +244,11 @@ public class RegisterFragment extends Fragment {
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-    case R.id.miRegistrationOk:
+    int itemId = item.getItemId();
+    if (itemId == R.id.miRegistrationOk) {
       submitRegistration();
-      break;
-    case R.id.miRegistrationCancel:
+    } else if (itemId == R.id.miRegistrationCancel) {
       getActivity().onBackPressed();
-      break;
     }
     return super.onOptionsItemSelected(item);
   }
@@ -205,21 +260,101 @@ public class RegisterFragment extends Fragment {
     mUsername.setEnabled(true);
     mFullName.setEnabled(true);
     // normal editable mode
-    mPhoto.setEnabled(true);
+    // mPhoto.setEnabled(true);
     mAboutMe.setEnabled(true);
 
   }
 
+  private void startCropImage() {
+
+    Intent intent = new Intent(getActivity(), CropImage.class);
+    intent.putExtra(CropImage.IMAGE_PATH, mFileTemp.getPath());
+    intent.putExtra(CropImage.SCALE, true);
+
+    intent.putExtra(CropImage.ASPECT_X, 1);
+    intent.putExtra(CropImage.ASPECT_Y, 1);
+
+    startActivityForResult(intent, REQUEST_CODE_CROP_IMAGE);
+  }
+
+  public static void copyStream(InputStream input, OutputStream output) throws IOException {
+
+    byte[] buffer = new byte[1024];
+    int bytesRead;
+    while ((bytesRead = input.read(buffer)) != -1) {
+      output.write(buffer, 0, bytesRead);
+    }
+  }
+
+  private Bitmap rescaleImage(Bitmap newBitmap) {
+    bitmap = Bitmap.createScaledBitmap(newBitmap, 300, 300, false);
+    return bitmap;
+  }
+
   protected void setPhoto() {
-    Intent intent = new Intent();
-    intent.setType("image/*");
-    intent.setAction(Intent.ACTION_GET_CONTENT);
-    intent.addCategory(Intent.CATEGORY_OPENABLE);
-    startActivityForResult(intent, PHOTO_REQUEST_CODE);
+    Intent photoIntent = new Intent(Intent.ACTION_PICK);
+    photoIntent.setType("image/*");
+    photoIntent.setAction(Intent.ACTION_GET_CONTENT);
+    photoIntent.addCategory(Intent.CATEGORY_OPENABLE);
+    startActivityForResult(photoIntent, PHOTO_REQUEST_CODE);
+  }
+
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    // TODO Auto-generated method stub
+    if (resultCode != getActivity().RESULT_OK) {
+
+      return;
+    }
+
+    switch (requestCode) {
+
+    case PHOTO_REQUEST_CODE:
+
+      try {
+
+        InputStream inputStream = getActivity().getContentResolver()
+            .openInputStream(data.getData());
+        FileOutputStream fileOutputStream = new FileOutputStream(mFileTemp);
+        copyStream(inputStream, fileOutputStream);
+        fileOutputStream.close();
+        inputStream.close();
+
+        startCropImage();
+
+      } catch (Exception e) {
+
+        Log.e(TAG, "Error while creating temp file", e);
+      }
+
+      break;
+    case REQUEST_CODE_CROP_IMAGE:
+
+      String path = data.getStringExtra(CropImage.IMAGE_PATH);
+      if (path == null) {
+
+        return;
+      }
+
+      bitmap = BitmapFactory.decodeFile(mFileTemp.getPath());
+      rescaleImage(bitmap);
+      gambar.setImageBitmap(bitmap);
+      break;
+    }
+
+    super.onActivityResult(requestCode, resultCode, data);
+    /*
+     * try { if(requestCode != getActivity().RESULT_CANCELED && data != null) { // We need to recyle
+     * unused bitmaps if (photoThumbnail != null) { photoThumbnail.recycle(); } InputStream stream =
+     * getActivity().getContentResolver().openInputStream( data.getData()); photoThumbnail =
+     * BitmapFactory.decodeStream(stream); stream.close(); gambar.setImageBitmap(photoThumbnail); }
+     * } catch (FileNotFoundException e) { e.printStackTrace(); } catch (IOException e) {
+     * e.printStackTrace(); }
+     */
   }
 
   protected void submitRegistration() {
-    if (photoBitmap == null) {
+    if (bitmap == null) {
       AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
       alert.setMessage(R.string.grubber_registration_profile_picture_warning);
       alert.setPositiveButton(R.string.grubber_registration_profile_picture_warning_yes,
@@ -234,6 +369,7 @@ public class RegisterFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
               // user skips photo
+              bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.user);
               new RegisterTask().execute();
             }
           });
@@ -369,6 +505,8 @@ public class RegisterFragment extends Fragment {
   public interface OnFragmentInteractionListener {
     public void onSuccessfulRegistration();
 
+    public void onLoginAction(User user);
+
   }
 
   class RegisterTask extends AsyncTask<Void, Void, Void> {
@@ -378,15 +516,22 @@ public class RegisterFragment extends Fragment {
       super.onPreExecute();
       Utility.lockScreenOrientation(getActivity());
       // show progress bar
+      mProgressDialog.show(getActivity().getSupportFragmentManager(),
+          ProgressBarDialogFragment.class.getName());
     }
 
     @Override
     protected Void doInBackground(Void... params) {
       try {
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] image = stream.toByteArray();
+
         UserDao.registerUser(getActivity(), mEmail.getText().toString().trim(), mPassword.getText()
             .toString().trim(), Utility.getTrimmedText(mUsername.getText()),
             Utility.getTrimmedText(mFullName.getText()),
-            Utility.getTrimmedText(mAboutMe.getText()), photoBitmap, photoThumbnail);
+            Utility.getTrimmedText(mAboutMe.getText()), image);
       } catch (ParseException e) {
         Log.w(TAG, "Problem while signing up user", e);
         getView().post(new Runnable() {
@@ -405,6 +550,7 @@ public class RegisterFragment extends Fragment {
     protected void onPostExecute(Void result) {
       super.onPostExecute(result);
       Utility.unlockScreenOrientation(getActivity());
+      mProgressDialog.dismiss();
       mListener.onSuccessfulRegistration();
     }
   }

@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-    
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-     >
-    
-    <RelativeLayout android:id="@+id/singlePost" 
+    android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        android:id="@+id/singlePost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="10dp"
-    	android:paddingLeft="15dp"
-    	android:paddingRight="15dp"
-    	android:paddingTop="10dp" >
-        
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="10dp" >
+
         <ImageView
             android:id="@+id/profilePic"
-            android:layout_height="40dp"
             android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentLeft="true"
-            android:padding="1dp"	
-            android:layout_marginRight="13dp" />
-        
+            android:layout_marginRight="13dp"
+            android:padding="1dp" />
+
         <TextView
             android:id="@+id/username"
             android:layout_width="wrap_content"
@@ -71,45 +70,45 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/price"/>
-        
+            android:layout_below="@+id/price" />
     </RelativeLayout>
-    	
-    	
-        <ListView android:id="@+id/list_comment"
-            android:layout_below="@id/singlePost"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent"
-	        android:cacheColorHint="@android:color/transparent"
-	        android:divider="@null"
-	        android:dividerHeight="10dp"
-	        android:listSelector="@android:color/transparent" >
-        </ListView>
-        
-        <LinearLayout android:id="@+id/comment_field"
-    		android:layout_width="match_parent"
-    		android:layout_height="wrap_content"
-    		android:layout_alignParentBottom="true"
-    		android:orientation="horizontal"
-    		android:focusableInTouchMode="true"
-    		android:background="#FFFFFF" >
-            
-            <EditText android:id="@+id/comment_text"
+
+    <ListView
+        android:id="@+id/list_comment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/singlePost"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="@null"
+        android:dividerHeight="10dp"
+        android:listSelector="@android:color/transparent" >
+    </ListView>
+
+    <LinearLayout
+        android:id="@+id/comment_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#FFFFFF"
+        android:focusableInTouchMode="true"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/comment_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:inputType="textMultiLine"
             android:hint="@string/comment_text"
+            android:inputType="textMultiLine"
             android:textColor="@color/abc_search_url_text_holo"
             android:textSize="14sp" />
-            
-            <Button
-        		android:id="@+id/buttonSend"
-        		android:layout_width="wrap_content"
-        		android:layout_height="wrap_content"
-        		android:text="@string/button_send"
-        		android:textSize="14sp" />
-            
-        </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_send"
+            android:textSize="14sp" />
+    </LinearLayout>
 
 </RelativeLayout>

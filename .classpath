@@ -8,5 +8,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/appcompat_v7"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/metaioSDK"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/google-play-services_lib"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/simple-crop-image-lib"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

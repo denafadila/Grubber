@@ -3,12 +3,10 @@ package skripsi.com.grubber.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import skripsi.com.android.Utility;
 import skripsi.com.grubber.model.Activity;
 import skripsi.com.grubber.model.AuditableParseObject;
 import skripsi.com.grubber.model.User;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.parse.ParseException;
@@ -21,7 +19,7 @@ public class UserDao extends ParseObject {
   private static final String TAG = UserDao.class.getSimpleName();
 
   public static User registerUser(Context context, String email, String password, String username,
-      String fullname, String aboutMe, byte[] photo, Bitmap photoThumbnail) throws ParseException {
+      String fullname, String aboutMe, byte[] photo) throws ParseException {
     // validation is already done, now attempt registration
     User user = new User();
     user.getParseUser().setUsername(username);
@@ -29,24 +27,23 @@ public class UserDao extends ParseObject {
     user.getParseUser().setPassword(password);
 
     // ------------------------------------------------------
-
+    // , byte[] photo
     assert (ParseUser.getCurrentUser() != null);
     user.setUserName(username);
     user.setFullName(fullname);
     user.setAboutMe(aboutMe);
     if (photo != null) {
-      ParseFile pp = new ParseFile(username.concat(".png"), photo);
+      ParseFile pp = new ParseFile(username.concat(".jpg"), photo);
       pp.save();
       Log.d(TAG, "Done saving profile photo file");
       user.setPhoto(pp);
     }
-    if (photoThumbnail != null) {
-      ParseFile thumbnail = Utility.savePicture(photoThumbnail, username.concat("-tn.png"));
-      thumbnail.save();
-      Log.d(TAG, "Done saving profile photo thumbnail file");
-      user.setPhotoThumbnail(thumbnail);
-      photoThumbnail.recycle();
-    }// ------------------------------------------------------
+    /*
+     * if (photoThumbnail != null) { ParseFile thumbnail = Utility.savePicture(photoThumbnail,
+     * username.concat("-tn.png")); thumbnail.save(); Log.d(TAG,
+     * "Done saving profile photo thumbnail file"); user.setPhotoThumbnail(thumbnail);
+     * photoThumbnail.recycle(); }
+     */// ------------------------------------------------------
     try {
       user.getParseUser().signUp();
     } catch (ParseException e) {
@@ -61,7 +58,7 @@ public class UserDao extends ParseObject {
 
     ParseQuery<Activity> pqAll = new ParseQuery<Activity>("Activity");
     pqAll.whereEqualTo(Activity.TYPE, Activity.TYPE_REVIEW);
-    pqAll.whereEqualTo(Activity.CREATED_BY, userId);
+    pqAll.whereEqualTo(AuditableParseObject.CREATED_BY, userId);
 
     int totalRevCount;
     try {
@@ -79,7 +76,26 @@ public class UserDao extends ParseObject {
 
     ParseQuery<Activity> pqAll = new ParseQuery<Activity>("Activity");
     pqAll.whereEqualTo(Activity.TYPE, Activity.TYPE_STALK);
-    pqAll.whereEqualTo(Activity.CREATED_BY, userId);
+    pqAll.whereEqualTo(AuditableParseObject.CREATED_BY, userId);
+
+    int totalStalkCount;
+    try {
+      pqAll.find();
+      totalStalkCount = pqAll.count();
+      Log.v(TAG, String.format("Loaded UserProfile [%s]", userId.toString()));
+    } catch (ParseException e) {
+      Log.w(TAG, String.format("Problem loading UserProfile [%s]", userId.toString()), e);
+      throw e;
+    }
+
+    return totalStalkCount;
+  }
+
+  public static int getStalkedCountById(ParseUser userId) throws ParseException {
+
+    ParseQuery<Activity> pqAll = new ParseQuery<Activity>("Activity");
+    pqAll.whereEqualTo(Activity.TYPE, Activity.TYPE_STALK);
+    pqAll.whereEqualTo(Activity.TARGET_USER_PROFILE, userId);
 
     int totalStalkCount;
     try {

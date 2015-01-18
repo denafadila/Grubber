@@ -6,24 +6,22 @@ import skripsi.com.grubber.dao.ActivityDao;
 import skripsi.com.grubber.model.Restaurant;
 import skripsi.com.grubber.model.User;
 import skripsi.com.grubber.restaurant.RestaurantProfileActivity.FragmentChangeListener;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 
-public class PostReviewFragment extends Fragment implements FragmentChangeListener {
+public class PostReviewFragment extends FragmentActivity implements FragmentChangeListener {
   private final static String TAG = RestaurantProfileFragment.class.getSimpleName();
 
   private ImageButton mPhoto = null;
@@ -56,12 +54,30 @@ public class PostReviewFragment extends Fragment implements FragmentChangeListen
   public void onCreate(Bundle savedInstanceState) {
     // TODO Auto-generated method stub
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.fragment_postreview);
+    mRestRev = (EditText) findViewById(R.id.etReviewBox);
+    mCashBar = (RatingBar) findViewById(R.id.rbCash);
+    mRateBar = (RatingBar) findViewById(R.id.rbRate);
+    mPostBtn = (Button) findViewById(R.id.btnPost);
+    mPostBtn.setOnClickListener(new OnClickListener() {
+
+      @Override
+      public void onClick(View v) {
+        // TODO Auto-generated method stub
+        Log.v(TAG, "Post review to server initialized!");
+        getRestViewContent();
+        mPostReviewTask = new PostReviewTask();
+        mPostReviewTask.execute();
+      }
+    });
     if (savedInstanceState == null) {
-      Bundle bundle = getArguments();
+      Intent intent = getIntent();
+      Bundle bundle = new Bundle();
+      bundle = intent.getBundleExtra("restId");
       if (bundle == null) {
         Log.v(TAG, "Bundle is null!");
       } else {
-        mDataRest = (Restaurant) bundle.getSerializable("RestData");
+        mDataRest = (Restaurant) bundle.getSerializable("objectRest");
         mStringRestName = mDataRest.getName();
         mStringRestId = mDataRest.getObjectId();
         if (mDataRest == null) {
@@ -74,35 +90,24 @@ public class PostReviewFragment extends Fragment implements FragmentChangeListen
     }
   }
 
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_postreview, container, false);
-    return view;
-  }
-
-  @Override
-  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-    // TODO Auto-generated method stub
-    super.onActivityCreated(savedInstanceState);
-    getRestView();
-  }
+  // @Override
+  // public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+  // savedInstanceState) {
+  // View view = inflater.inflate(R.layout.fragment_postreview, container, false);
+  // return view;
+  // }
+  //
+  // @Override
+  // public void onActivityCreated(Bundle savedInstanceState) {
+  // // TODO Auto-generated method stub
+  // super.onActivityCreated(savedInstanceState);
+  // getRestView();
+  // }
 
   public void getRestView() {
-    mRestRev = (EditText) getView().findViewById(R.id.etReviewBox);
-    mCashBar = (RatingBar) getView().findViewById(R.id.rbCash);
-    mRateBar = (RatingBar) getView().findViewById(R.id.rbRate);
-    mPostBtn = (Button) getView().findViewById(R.id.btnPost);
-    mPostBtn.setOnClickListener(new OnClickListener() {
 
-      @Override
-      public void onClick(View v) {
-        // TODO Auto-generated method stub
-        Log.v(TAG, "Post review to server initialized!");
-        getRestViewContent();
-        mPostReviewTask = new PostReviewTask();
-        mPostReviewTask.execute();
-      }
-    });
+    LayoutInflater inflater = LayoutInflater.from(this);
+    View getView = inflater.inflate(R.layout.fragment_postreview, null);
 
   }
 
@@ -111,15 +116,6 @@ public class PostReviewFragment extends Fragment implements FragmentChangeListen
     rate = mRateBar.getRating();
     cash = mCashBar.getRating();
     // mCountReviews.setText(tempCountReviews);
-  }
-
-  public void showOtherFragment() {
-    FragmentManager fragmentManager = getFragmentManager();
-    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    RestaurantProfileFragment fragment3 = new RestaurantProfileFragment();
-    fragmentTransaction.replace(R.id.content_frame, fragment3);
-    fragmentTransaction.addToBackStack(null);
-    fragmentTransaction.commit();
   }
 
   class PostReviewTask extends AsyncTask<Void, Object, Restaurant> {
@@ -159,8 +155,7 @@ public class PostReviewFragment extends Fragment implements FragmentChangeListen
     protected void onPostExecute(Restaurant result) {
       super.onPostExecute(result);
       Log.v(TAG, "Finished task!");
-      showOtherFragment();
-      getActivity().finish();
+      finish();
     }
   }
 

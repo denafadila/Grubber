@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.facebook.AppEventsLogger;
+
 public class SplashActivity extends Activity {
 
   @Override
@@ -37,6 +39,23 @@ public class SplashActivity extends Activity {
     // start thread
     background.start();
 
+  }
+
+  @Override
+  protected void onResume() {
+    super.onResume();
+
+    // Logs 'install' and 'app activate' App Events.
+    AppEventsLogger.activateApp(this, getString(R.string.app_id));
+    // show a dialog box with message
+  }
+
+  @Override
+  protected void onPause() {
+    super.onPause();
+
+    // Logs 'app deactivate' App Event.
+    AppEventsLogger.deactivateApp(this, getString(R.string.app_id));
   }
 
   @Override

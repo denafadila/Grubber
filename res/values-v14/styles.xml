@@ -14,12 +14,15 @@
     </style>
     
     <style name="CustomActionBar" parent="@style/Widget.AppCompat.Base.ActionBar.Solid">
-        <item name="android:background">@color/green_tosqa</item>
+        <item name="android:background">@color/main_tab_black</item>
         <item name="android:titleTextStyle">@style/CustomTitle</item>
+        <item name="android:height">50dp</item>
     </style>
     
     <style name="CustomTitle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/grey_bg</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">18sp</item>
+
     </style>
     
     

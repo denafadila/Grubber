@@ -25,6 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#59B390"
+            android:showDividers="none"
             android:layout_weight="0"
             android:padding="0dp">
             

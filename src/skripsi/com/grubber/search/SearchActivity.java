@@ -122,13 +122,14 @@ public class SearchActivity extends FragmentActivity {
      * 
      * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
      */
+    @Override
     protected void onPostExecute(List<User> result) {
       // TODO Auto-generated method stub
       super.onPostExecute(result);
 
       // Parameter userList menyimpan hasil query yang didapat dari
       // activityDao dan akan dikirim ke searchListAdapter
-      mAdapter = new SearchListAdapter(getBaseContext(), actList, userList);
+      mAdapter = new SearchListAdapter(getBaseContext(), actList, userList, null);
       if (mAdapter.isEmpty()) {
         Log.v(TAG, "EMPTY ADAPTER?");
       } else {

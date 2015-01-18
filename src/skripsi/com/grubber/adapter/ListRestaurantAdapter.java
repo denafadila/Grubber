@@ -68,7 +68,7 @@ public class ListRestaurantAdapter extends BaseAdapter {
     tvRestName.setText(rest.get(position).getName());
     tvRestCity.setText(rest.get(position).getCity());
     tvDesc.setText(rest.get(position).getDesc());
-    rbStar.setRating(rest.get(position).getRate());
+    rbStar.setRating(rest.get(position).getStar());
     rbCash.setRating(rest.get(position).getCash());
 
     return convertView;

@@ -8,7 +8,7 @@ import java.util.List;
 import skripsi.com.grubber.R;
 import skripsi.com.grubber.image.ImageLoader;
 import skripsi.com.grubber.model.Restaurant;
-import skripsi.com.grubber.restaurant.RestaurantProfileActivity;
+import skripsi.com.grubber.restaurant.RestaurantActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -22,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.parse.ParseFile;
+
 public class TrendingAdapter extends BaseAdapter {
 
   private static final String TAG = TrendingAdapter.class.getSimpleName();
@@ -33,6 +35,7 @@ public class TrendingAdapter extends BaseAdapter {
   TextView tvCity;
   TextView tvAddress;
   TextView tvDesc;
+  TextView tvRate, tvCash;
   RatingBar rbRate;
   RatingBar rbCash;
   ImageView profilePic;
@@ -46,7 +49,6 @@ public class TrendingAdapter extends BaseAdapter {
     this.layoutResourceId = layoutResourceId;
     this.context = context;
     this.mPost = postList;
-
     imageLoader = new ImageLoader(context);
   }
 
@@ -82,25 +84,31 @@ public class TrendingAdapter extends BaseAdapter {
     tvCity = (TextView) view.findViewById(R.id.city);
     tvAddress = (TextView) view.findViewById(R.id.address);
     tvDesc = (TextView) view.findViewById(R.id.desc);
-    rbRate = (RatingBar) view.findViewById(R.id.rating);
-    rbCash = (RatingBar) view.findViewById(R.id.price);
+    tvRate = (TextView) view.findViewById(R.id.rating);
+    tvRate.setText("Rating ");
+    rbRate = (RatingBar) view.findViewById(R.id.ratingBar);
+    rbRate.setRating((float) mPost.get(position).getStar());
+    tvCash = (TextView) view.findViewById(R.id.price);
+    tvCash.setText("Price ");
+    rbCash = (RatingBar) view.findViewById(R.id.cashBar);
+    rbCash.setRating((float) mPost.get(position).getCash());
     profilePic = (ImageView) view.findViewById(R.id.profilePic);
     Log.d("Adapter", "Berhasil set holder");
 
     final Format formatter = new SimpleDateFormat("dd MMMM, yyyy");
     NumberFormat nm = NumberFormat.getNumberInstance();
 
-    // ParseFile pp = (ParseFile) mPost.get(position).getCreatedBy().getParseFile("profilePic");
-    // final String imageUrl = pp.getUrl();
+    ParseFile pp = (ParseFile) mPost.get(position).getParseFile("photoRest");
+    final String imageUrl = pp.getUrl();
     // Set the results into TextView
 
     tvRestName.setText(mPost.get(position).getName());
     tvCity.setText(mPost.get(position).getCity());
     tvAddress.setText(mPost.get(position).getAddress());
     tvDesc.setText(mPost.get(position).getDesc());
-    rbRate.setRating((float) mPost.get(position).getRate());
-    rbCash.setRating((float) mPost.get(position).getCash());
-    // imageLoader.DisplayImage(imageUrl, profilePic);
+    rbRate.setRating(mPost.get(position).getStar());
+    rbCash.setRating(mPost.get(position).getCash());
+    imageLoader.DisplayImage(imageUrl, profilePic);
 
     // Listen for ListView Item Click
     view.setOnClickListener(new OnClickListener() {
@@ -109,14 +117,8 @@ public class TrendingAdapter extends BaseAdapter {
       public void onClick(View arg0) {
         // TODO Auto-generated method stub
         // Send single item click data to SingleItemView Class
-        Intent intent = new Intent(context, RestaurantProfileActivity.class);
+        Intent intent = new Intent(context, RestaurantActivity.class);
         intent.putExtra("restId", mPost.get(position).getObjectId());
-        intent.putExtra("restName", mPost.get(position).getName());
-        intent.putExtra("city", mPost.get(position).getCity());
-        intent.putExtra("address", mPost.get(position).getAddress());
-        intent.putExtra("desc", mPost.get(position).getDesc());
-        intent.putExtra("rating", mPost.get(position).getRate());
-        intent.putExtra("price", mPost.get(position).getCash());
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         // intent.putExtra("profilePic",
         // ((ParseFile) mPost.get(position).getCreatedBy().getParseFile("profilePic")).getUrl());

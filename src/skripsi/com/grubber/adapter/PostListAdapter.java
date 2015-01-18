@@ -8,6 +8,7 @@ import java.util.List;
 import skripsi.com.grubber.R;
 import skripsi.com.grubber.image.ImageLoader;
 import skripsi.com.grubber.model.Activity;
+import skripsi.com.grubber.model.User;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -32,20 +34,20 @@ public class PostListAdapter extends BaseAdapter {
   TextView tvUser;
   TextView tvRestName;
   TextView tvContent;
+  TextView tvRate;
+  TextView tvCash;
   RatingBar rbRate;
   RatingBar rbCash;
   TextView tvDate;
   ImageView profilePic;
   ImageLoader imageLoader;
-  private List<Activity> mPost = null;
 
+  private List<Activity> mPost = null;
   private Bitmap ppBitmap;
 
   public PostListAdapter(Context context, List<Activity> postList) {
-
     this.context = context;
     this.mPost = postList;
-
     imageLoader = new ImageLoader(context);
   }
 
@@ -67,40 +69,64 @@ public class PostListAdapter extends BaseAdapter {
     return position;
   }
 
-  @Override
   public View getView(final int position, View view, ViewGroup parent) {
     // TODO Auto-generated method stub
     if (view == null) {
       LayoutInflater inflater = (LayoutInflater) this.context
           .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-      view = inflater.inflate(R.layout.adapter_post_list, null);
+      view = inflater.inflate(R.layout.activity_post_list, null);
     }
 
     // Locate text view in listview_post
+
     tvUser = (TextView) view.findViewById(R.id.username);
     tvRestName = (TextView) view.findViewById(R.id.restaurant);
     tvContent = (TextView) view.findViewById(R.id.review);
-    rbRate = (RatingBar) view.findViewById(R.id.rating);
-    rbCash = (RatingBar) view.findViewById(R.id.price);
+    tvContent.setOnLongClickListener(new OnLongClickListener() {
+
+      @Override
+      public boolean onLongClick(View v) {
+        // TODO Auto-generated method stub
+        postContentToWall(mPost.get(position));
+        return false;
+
+      }
+    });
+    tvRate = (TextView) view.findViewById(R.id.rating);
+    tvCash = (TextView) view.findViewById(R.id.price);
+    rbRate = (RatingBar) view.findViewById(R.id.ratingBar);
+    rbCash = (RatingBar) view.findViewById(R.id.cashBar);
     tvDate = (TextView) view.findViewById(R.id.date);
     profilePic = (ImageView) view.findViewById(R.id.profilePic);
     Log.d("Adapter", "Berhasil set holder");
 
-    final Format formatter = new SimpleDateFormat("dd MMMM, yyyy");
+    final Format formatter = new SimpleDateFormat("MMM dd, yyyy");
     NumberFormat nm = NumberFormat.getNumberInstance();
 
     Log.v(TAG, "post = " + mPost.get(position).getCreatedBy().getUsername());
-    ParseFile pp = (ParseFile) mPost.get(position).getCreatedBy().getParseFile("profilePic");
-    final String imageUrl = pp.getUrl();
-    // Set the results into TextView
 
-    tvUser.setText(mPost.get(position).getCreatedBy().getUsername());
-    tvRestName.setText(mPost.get(position).getRestName());
-    tvContent.setText(mPost.get(position).getContent());
+    ParseFile pp = (ParseFile) mPost.get(position).getCreatedBy().getParseFile("profilePic");
+    /*
+     * byte[] data = null; try { data = pp.getData(); } catch (ParseException e) { // TODO
+     * Auto-generated catch block e.printStackTrace(); } ppBitmap =
+     * BitmapFactory.decodeByteArray(data, 0, data.length);
+     */
+
+    final String imageUrl = pp.getUrl();
+    Log.d("current user", User.getCurrentUser().toString());
+
+    // Set the results into TextView
+    tvUser.setText("by " + mPost.get(position).getCreatedBy().getUsername());
+    tvRestName.setText(mPost.get(position).getResoId().getName());
+    tvContent.setText("\"" + mPost.get(position).getContent() + "\"");
+    tvRate.setText("Rating ");
     rbRate.setRating((float) mPost.get(position).getRate());
+    tvCash.setText("Price ");
     rbCash.setRating((float) mPost.get(position).getCash());
     tvDate.setText(formatter.format(mPost.get(position).getCreatedAt()));
     imageLoader.DisplayImage(imageUrl, profilePic);
+
+    // profilePic.setImageBitmap(RoundImage.getRoundedShape(ppBitmap));
 
     // Listen for ListView Item Click
     view.setOnClickListener(new OnClickListener() {
@@ -111,18 +137,33 @@ public class PostListAdapter extends BaseAdapter {
         // Send single item click data to SingleItemView Class
         Intent intent = new Intent(context, skripsi.com.grubber.timeline.Comment.class);
         intent.putExtra("reviewId", mPost.get(position).getObjectId());
-        intent.putExtra("username", mPost.get(position).getCreatedBy().getUsername());
-        intent.putExtra("restaurant", mPost.get(position).getRestName());
-        intent.putExtra("review", mPost.get(position).getContent());
-        intent.putExtra("rating", mPost.get(position).getRate());
-        intent.putExtra("price", mPost.get(position).getCash());
-        intent.putExtra("date", formatter.format(mPost.get(position).getCreatedAt()));
-        intent.putExtra("profilePic",
-            ((ParseFile) mPost.get(position).getCreatedBy().getParseFile("profilePic")).getUrl());
+
+        if (mPost.get(position).getCreatedBy().getObjectId()
+            .equals(User.getCurrentUser().getObjectId())) {
+          intent.putExtra("commentStatus", "Read");
+          Log.d("commentStatus", "ReadAll");
+        } else {
+          intent.putExtra("commentStatus", "Unread");
+          Log.d("commentStatus", "NoAccess");
+        }
         context.startActivity(intent);
       }
     });
 
     return view;
   }
+
+  public interface MyFacebookListener {
+    // you can define any parameter as per your requirement
+    public void postContentToWall(Activity review);
+  }
+
+  public void postContentToWall(Activity review) {
+  }
+  /*
+   * public void readNotif(String reviewId) {
+   * 
+   * for(int i=0;i<getCount();i++) { if(reviewId.equals(mPost.get(i).getObjectId())) { getView(i,
+   * null, null); } } }
+   */
 }

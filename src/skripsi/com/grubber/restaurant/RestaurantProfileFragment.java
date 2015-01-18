@@ -64,7 +64,9 @@ public class RestaurantProfileFragment extends Fragment implements FragmentChang
   @Override
   public void onCreate(Bundle savedInstanceState) {
     // TODO Auto-generated method stub
+
     super.onCreate(savedInstanceState);
+
     if (savedInstanceState == null) {
       mRestIdString = (String) getActivity().getIntent().getSerializableExtra("restId");
       if (mRestIdString == null) {
@@ -115,7 +117,7 @@ public class RestaurantProfileFragment extends Fragment implements FragmentChang
     mRestName.setText(rest.getName());
     mRestCity.setText(rest.getCity());
     mRestDesc.setText(rest.getDesc());
-    mRateBar.setRating(rest.getRate());
+    mRateBar.setRating(rest.getStar());
     mCashBar.setRating(rest.getCash());
     mTotalRev.setText(getResources().getQuantityString(R.plurals.grubber_restaurant_reviews,
         tempCountReviews, tempCountReviews));
@@ -127,8 +129,8 @@ public class RestaurantProfileFragment extends Fragment implements FragmentChang
     FragmentManager fragmentManager = getFragmentManager();
     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
     PostReviewFragment fragment3 = new PostReviewFragment();
-    fragmentTransaction.replace(R.id.content_frame, fragment3);
-    fragment3.setArguments(restObject);
+    // fragmentTransaction.replace(R.id.content_frame, fragment3);
+    // fragment3.setArguments(restObject);
     fragmentTransaction.addToBackStack(null);
     fragmentTransaction.commit();
   }

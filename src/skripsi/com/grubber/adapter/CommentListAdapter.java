@@ -10,7 +10,6 @@ import skripsi.com.grubber.R;
 import skripsi.com.grubber.image.ImageLoader;
 import skripsi.com.grubber.model.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,7 +76,7 @@ public class CommentListAdapter extends BaseAdapter {
 	    
 	    Log.v(TAG, "post = " + cPost.get(position).getCreatedBy().getUsername());
 	    
-	    ParseFile pp = (ParseFile) cPost.get(position).getCreatedBy().getParseFile("profilePic");
+	    ParseFile pp = cPost.get(position).getCreatedBy().getParseFile("profilePic");
 	    
 	    final String imageUrl = pp.getUrl();
 	    
