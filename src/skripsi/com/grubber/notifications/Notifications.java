@@ -7,15 +7,21 @@ import skripsi.com.grubber.adapter.NotificationListAdapter;
 import skripsi.com.grubber.dao.ActivityDao;
 import skripsi.com.grubber.model.Activity;
 import skripsi.com.grubber.model.User;
+import skripsi.com.grubber.profile.ProfileFragment;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.parse.ParseException;
@@ -83,6 +89,40 @@ public class Notifications extends Fragment {
       if (isAdded()) {
         // Locate the listview in listview_timeline.xml
         listview = (ListView) getView().findViewById(R.id.list_notif);
+        listview.setOnItemClickListener(new OnItemClickListener() {
+
+          @Override
+          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            // TODO Auto-generated method stub
+            Intent intent = null;
+            if (mResult.get(position).getType().equals("C")) {
+              intent = new Intent(getActivity(), skripsi.com.grubber.timeline.Comment.class);
+              intent.putExtra("reviewId", mResult.get(position).getReviewId());
+
+              if (mResult.get(position).getTargetUserProfile().getObjectId()
+                  .equals(User.getCurrentUser().getObjectId())) {
+                intent.putExtra("commentStatus", "Read");
+                Log.d("commentStatus", "Read");
+              } else {
+                intent.putExtra("commentStatus", "Unread");
+                Log.d("commentStatus", "Unread");
+              }
+
+              getActivity().startActivity(intent);
+            } else {
+              Bundle bundle = new Bundle();
+              bundle.putString("objectId", mResult.get(position).getCreatedBy().getObjectId());
+              bundle.putString("userName", mResult.get(position).getCreatedBy().getUsername());
+              Fragment fragment = new ProfileFragment();
+              fragment.setArguments(bundle);
+              FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+              FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+              fragmentTransaction.replace(android.R.id.tabcontent, fragment);
+              fragmentTransaction.addToBackStack(null);
+              fragmentTransaction.commit();
+            }
+          }
+        });
         // Pass the result to ListViewAdapter.java
         mAdapter = new NotificationListAdapter(getActivity(), mResult);
         Log.d("Adapter", "Sukses");

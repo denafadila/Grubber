@@ -4,7 +4,9 @@ import skripsi.com.grubber.model.User;
 import skripsi.com.grubber.timeline.TimelineActivity;
 import android.app.ActionBar;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ConfigurationInfo;
@@ -13,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -51,8 +54,11 @@ public class MainActivity extends GrubberActivity implements
     } else {
       boolean isActionBarShowing = savedInstanceState.getBoolean("isActionBarShowing");
       if (isActionBarShowing) {
-        getSupportActionBar().show();
-        this.getSupportActionBar().setIcon(R.drawable.ic_navigation_drawer);
+        /*
+         * getSupportActionBar().show();
+         * this.getSupportActionBar().setIcon(R.drawable.ic_navigation_drawer);
+         */
+        getSupportActionBar().hide();
       } else {
         getSupportActionBar().hide();
       }
@@ -63,7 +69,7 @@ public class MainActivity extends GrubberActivity implements
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
     getMenuInflater().inflate(R.menu.main, menu);
-    return true;
+    return false;
   }
 
   @Override
@@ -73,7 +79,7 @@ public class MainActivity extends GrubberActivity implements
     // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
     if (id == R.id.action_settings) {
-      return true;
+      return false;
     }
     return super.onOptionsItemSelected(item);
   }
@@ -100,9 +106,12 @@ public class MainActivity extends GrubberActivity implements
         transaction.replace(R.id.content_frame, f);
         transaction.commit();
       }
-      this.getSupportActionBar().show();
-      this.getSupportActionBar().setTitle(R.string.grubber_main_register);
-      this.getSupportActionBar().setIcon(R.drawable.ic_launcher_new);
+      /*
+       * this.getSupportActionBar().show();
+       * this.getSupportActionBar().setTitle(R.string.grubber_main_register);
+       * this.getSupportActionBar().setIcon(R.drawable.ic_launcher_new);
+       */
+      getSupportActionBar().hide();
       break;
     case FRAGMENT_REGISTER:
       Log.v(TAG, "Showing Registration");
@@ -115,9 +124,12 @@ public class MainActivity extends GrubberActivity implements
         transaction.replace(R.id.content_frame, f);
         transaction.commit();
       }
-      this.getSupportActionBar().show();
-      this.getSupportActionBar().setTitle(R.string.grubber_main_register);
-      this.getSupportActionBar().setIcon(R.drawable.ic_launcher_new);
+      /*
+       * this.getSupportActionBar().show();
+       * this.getSupportActionBar().setTitle(R.string.grubber_main_register);
+       * this.getSupportActionBar().setIcon(R.drawable.ic_launcher_new);
+       */
+      getSupportActionBar().hide();
       break;
     }
   }
@@ -172,4 +184,28 @@ public class MainActivity extends GrubberActivity implements
     // showFragment(FRAGMENT_RESET_PASSWORD, true);
   }
 
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
+    // Handle the back button
+    if (keyCode == KeyEvent.KEYCODE_BACK) {
+      // Ask the user if they want to quit
+      new AlertDialog.Builder(this).setIcon(android.R.drawable.ic_dialog_alert)
+          .setTitle(R.string.grubber_quit).setMessage(R.string.grubber_confirm_quit)
+          .setPositiveButton(R.string.grubber_quit_yes, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+              // Stop the activity
+              MainActivity.this.finish();
+            }
+
+          }).setNegativeButton(R.string.grubber_quit_no, null).show();
+
+      return true;
+    } else {
+      return super.onKeyDown(keyCode, event);
+    }
+
+  }
 }

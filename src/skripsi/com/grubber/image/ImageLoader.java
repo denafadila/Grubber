@@ -45,7 +45,7 @@ public class ImageLoader {
         imageViews.put(imageView, url);
         Bitmap bitmap = memoryCache.get(url);
         if (bitmap != null)
-            imageView.setImageBitmap(RoundImage.getRoundedShape(bitmap));
+            imageView.setImageBitmap(bitmap);
         else {
             queuePhoto(url, imageView);
             imageView.setImageResource(stub_id);
@@ -152,7 +152,7 @@ public class ImageLoader {
                 memoryCache.put(photoToLoad.url, bmp);
                 if (imageViewReused(photoToLoad))
                     return;
-                BitmapDisplayer bd = new BitmapDisplayer(RoundImage.getRoundedShape(bmp), photoToLoad);
+                BitmapDisplayer bd = new BitmapDisplayer(bmp, photoToLoad);
                 handler.post(bd);
             } catch (Throwable th) {
                 th.printStackTrace();
@@ -177,7 +177,6 @@ public class ImageLoader {
             photoToLoad = p;
         }
  
-        @Override
         public void run() {
             if (imageViewReused(photoToLoad))
                 return;

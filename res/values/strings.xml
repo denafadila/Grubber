@@ -7,7 +7,7 @@
     <string name="PARSE_APP_ID">2dJH5iHjG7p8bt204AvSnTY7FOaBO7yukyqDlU8F</string>
     <string name="PARSE_CLIENT_KEY">CD4pF6xy6PJ5TtUaJ4MWj3aqbXO45lM6pmPO7Ovk</string>
     <string name="GOOGLE_MAP_API2">AIzaSyCARHQM6Y1NwGyLftnWOWNdUcSAWPiHEqE</string>
-    <string name="app_id">69866727099220</string>
+    <string name="app_id">696866727099220</string>
     <string name="grubber_main_register">Sign Up</string>
     <string name="grubber_registration_agree_tnc_statement">I accept Coortyard\'s %1$s and %2$s</string>
     <string name="grubber_registration_agree_tnc_tos">Terms of Service</string>
@@ -36,6 +36,10 @@
     <string name="grubber_backend_error">Opps, we encountered server error. Please try again later</string>
     <string name="grubber_profile_tab_myprofile">About Me</string>
     <string name="grubber_profile_tab_profile">About me</string>
+    <string name="grubber_quit">Leaving Grubber</string>
+    <string name="grubber_confirm_quit">Do you really want to go?</string>
+    <string name="grubber_quit_yes">Yes</string>
+    <string name="grubber_quit_no">No</string>
     <string name="grubber_rating_text">Rating</string>
     <string name="grubber_price_text">Price</string>
     <string name="title_facebook_login">Facebook Login</string>

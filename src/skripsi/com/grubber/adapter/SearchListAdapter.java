@@ -123,7 +123,6 @@ public class SearchListAdapter extends BaseAdapter {
       Log.v(TAG, "position = " + position);
       if (listAct != null) {
         for (int i = 0; i < listAct.size(); i++) {
-
           Log.v(TAG, "listAct = " + listAct.get(i).getTargetUserProfile().getUserName());
           Log.v(TAG, "listUser = " + listUser.get(position).getUserName());
           if (listAct.get(i).getTargetUserProfile().getUserName()

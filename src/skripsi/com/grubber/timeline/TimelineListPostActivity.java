@@ -5,7 +5,6 @@ import java.util.List;
 
 import skripsi.com.grubber.R;
 import skripsi.com.grubber.adapter.PostListAdapter;
-import skripsi.com.grubber.adapter.PostListAdapter.MyFacebookListener;
 import skripsi.com.grubber.dao.ActivityDao;
 import skripsi.com.grubber.model.Activity;
 import skripsi.com.grubber.model.User;
@@ -25,6 +24,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -42,7 +43,7 @@ import com.facebook.widget.FacebookDialog;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
-public class TimelineListPostActivity extends Fragment implements MyFacebookListener {
+public class TimelineListPostActivity extends Fragment {
 
   protected static final String TAG = TimelineListPostActivity.class.getSimpleName();
   // Your Facebook APP ID
@@ -55,7 +56,6 @@ public class TimelineListPostActivity extends Fragment implements MyFacebookList
   private SharedPreferences mPrefs;
   private Button mFBShare = null;
   private Button mFBLogin = null;
-  private Session fbSession = null;
 
   ListView listview;
   List<Activity> m1Result;
@@ -76,20 +76,44 @@ public class TimelineListPostActivity extends Fragment implements MyFacebookList
     }
   };
 
-  private void onSessionStateChange(Session session, SessionState state, Exception exception) {
-    if (state.isOpened()) {
-      // System.out.println("Logged in...");
-      Log.v(TAG, "Logged in");
-      session = fbSession;
-    } else if (state.isClosed()) {
-      // System.out.println("Logged out...");
-      Log.v(TAG, "Logged out");
-    }
+  // public void login() {
+  // Session session = Session.getActiveSession();
+  // if (!session.isOpened() && !session.isClosed()) {
+  // session.openForRead(new Session.OpenRequest(this).setCallback(callback));
+  // } else {
+  // Session.openActiveSession(getActivity(), this, true, callback);
+  // }
+  // }
+  //
+  // private class SessionStatusCallback implements Session.StatusCallback {
+  // @Override
+  // public void call(Session session, SessionState state, Exception exception) {
+  // if (exception != null) {
+  // // handleException(exception);
+  // Log.e(TAG, exception.getMessage());
+  // }
+  // if (state.isOpened()) {
+  //
+  // } else if (state.isClosed()) {
+  // login();
+  // }
+  // }
+  // }
+
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    facebook = new Facebook(APP_ID);
+    mAsyncRunner = new AsyncFacebookRunner(facebook);
+    uiHelper = new UiLifecycleHelper(getActivity(), callback);
+    uiHelper.onCreate(savedInstanceState);
+    setRetainInstance(true);
   }
 
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
+
     uiHelper.onActivityResult(requestCode, resultCode, data, new FacebookDialog.Callback() {
       @Override
       public void onError(FacebookDialog.PendingCall pendingCall, Exception error, Bundle data) {
@@ -103,22 +127,32 @@ public class TimelineListPostActivity extends Fragment implements MyFacebookList
     });
   }
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    facebook = new Facebook(APP_ID);
-    mAsyncRunner = new AsyncFacebookRunner(facebook);
-    uiHelper = new UiLifecycleHelper(getActivity(), callback);
-    uiHelper.onCreate(savedInstanceState);
-    setRetainInstance(true);
+  private void onSessionStateChange(Session session, SessionState state, Exception exception) {
+    if (state.isOpened()) {
+      // System.out.println("Logged in...");
+      Log.v(TAG, "Logged in");
+    } else if (state.isClosed()) {
+      // System.out.println("Logged out...");
+      Log.v(TAG, "Logged out");
+    }
   }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
     View view = inflater.inflate(R.layout.fragment_postlist_timeline, container, false);
-
     listview = (ListView) view.findViewById(R.id.list_timeline);
+    listview.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+      public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
+        // postContentToWall(m1Result.get(pos));
+        // publishFeedDialog();
+        postContentToWall(m1Result.get(pos));
+
+        return true;
+      }
+
+    });
     loading_spinner = (ProgressBar) view.findViewById(R.id.loading_spinner);
     loading_spinner.setVisibility(View.GONE);
 
@@ -171,20 +205,7 @@ public class TimelineListPostActivity extends Fragment implements MyFacebookList
       try {
         Log.v(TAG, "Getting post list for current user = "
             + ParseUser.getCurrentUser().getUsername());
-        // final String CACHE_REVIEW = "reviewId";
         mResult = ActivityDao.getPostList(User.getCurrentUser());
-        /*
-         * if(ActivityDao.getLocalPostList(ParseUser.getCurrentUser().toString()).size() == 0){
-         * mResult = ActivityDao.getPostList(ParseUser.getCurrentUser().toString());
-         * Log.d("mResult", "!!!!getPostList"); } else { mResult =
-         * ActivityDao.getLocalPostList(ParseUser.getCurrentUser().toString()); Log.d("mResult",
-         * "!!!!getLocalPostList"); }
-         * 
-         * ParseObject.unpinAllInBackground(CACHE_REVIEW, mResult, new DeleteCallback() {
-         * 
-         * @Override public void done(ParseException e) { // TODO Auto-generated method stub
-         * ParseObject.pinAllInBackground(CACHE_REVIEW, mResult); Log.d(TAG, "cache succeed"); } });
-         */
       } catch (ParseException e) {
         Log.v(TAG, "Failed to get post list for current user");
         e.printStackTrace();
@@ -237,6 +258,11 @@ public class TimelineListPostActivity extends Fragment implements MyFacebookList
   @Override
   public void onResume() {
     super.onResume();
+    Session session = Session.getActiveSession();
+    if (session != null && (session.isOpened() || session.isClosed())) {
+      onSessionStateChange(session, session.getState(), null);
+    }
+
     uiHelper.onResume();
   }
 
@@ -252,18 +278,11 @@ public class TimelineListPostActivity extends Fragment implements MyFacebookList
     uiHelper.onPause();
   }
 
-  public interface MyFacebookListener {
-    // you can define any parameter as per your requirement
-    public void postToWall(Activity review);
-
-    public void loginToFacebook();
-  }
-
-  public void postContentToWall(Activity rest) {
-    if (rest == null) {
+  public void postContentToWall(Activity review) {
+    if (review == null) {
       Toast.makeText(getActivity().getApplicationContext(), "No restaurant data received ...",
           Toast.LENGTH_SHORT).show();
-    } else if (rest != null) {
+    } else if (review != null) {
       Toast.makeText(getActivity().getApplicationContext(), "Content received ...",
           Toast.LENGTH_SHORT).show();
     }
@@ -277,18 +296,23 @@ public class TimelineListPostActivity extends Fragment implements MyFacebookList
           Toast.LENGTH_SHORT).show();
       return;
     }
+
     Toast.makeText(getActivity().getApplicationContext(), "Loading...", Toast.LENGTH_SHORT).show();
+    Log.v(TAG, "Review =" + review.getRestName() + " & " + review.getContent() + " & "
+        + review.getCreatedBy().getUsername());
     if (FacebookDialog.canPresentShareDialog(getActivity(),
         FacebookDialog.ShareDialogFeature.SHARE_DIALOG)) {
       FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(getActivity())
-          .setName(rest.getRestName())
+          .setName(review.getContent() + " at " + review.getResoId().getName())
+          .setPlace(review.getResoId().getCity()).setCaption(review.getCreatedBy().getUsername())
           .setLink("https://play.google.com/store/apps/details?id=com.framework.grubber")
-          .setDescription(rest.getContent()).setPicture("http://3.t.imgbox.com/BBGnlGHR.jpg")
+          .setDescription(review.getContent()).setPicture("http://3.t.imgbox.com/BBGnlGHR.jpg")
           .build();
       uiHelper.trackPendingDialogCall(shareDialog.present());
     } else {
       // System.out.println("Fail Success!");
     }
+
   }
 
   private boolean checkNetwork() {
@@ -378,4 +402,5 @@ public class TimelineListPostActivity extends Fragment implements MyFacebookList
           });
     }
   }
+
 }
