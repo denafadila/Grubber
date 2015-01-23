@@ -13,7 +13,7 @@ import skripsi.com.grubber.R;
 import skripsi.com.grubber.dao.RestaurantDao;
 import skripsi.com.grubber.gps.LocationUtils;
 import skripsi.com.grubber.model.Restaurant;
-import skripsi.com.grubber.restaurant.RestaurantProfileActivity;
+import skripsi.com.grubber.restaurant.RestaurantActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -237,7 +237,7 @@ public class ARActivity extends ARViewActivity implements LocationListener,
     MetaioDebug.log("Geometry selected: " + geometry);
     Log.v(TAG, "Object touched!");
     if (markerGeo.containsKey(geometry)) {
-      Intent intent = new Intent(ARActivity.this, RestaurantProfileActivity.class);
+      Intent intent = new Intent(ARActivity.this, RestaurantActivity.class);
       intent.putExtra("restObject", markerGeo.get(geometry));
       intent.putExtra("restId", markerGeo.get(geometry).getObjectId());
       intent.putExtra("restName", markerGeo.get(geometry).getName());
