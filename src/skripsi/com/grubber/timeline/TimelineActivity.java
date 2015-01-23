@@ -75,20 +75,6 @@ public class TimelineActivity extends BaseActivity {
     new RemoteDataTask().execute();
   }
 
-  /*
-   * public void setActionBar() { ActionBar actionBar = getActionBar();
-   * actionBar.setDisplayShowHomeEnabled(false); actionBar.setDisplayShowTitleEnabled(false);
-   * 
-   * LayoutInflater inflater = LayoutInflater.from(this); View actionBar_view =
-   * inflater.inflate(R.layout.action_bar, null);
-   * 
-   * //Typeface font_style = Typeface.createFromAsset(getAssets(), "fonts/jaapokki_regular.ttf");
-   * TextView title_app = (TextView) actionBar_view.findViewById(R.id.title_app);
-   * //title_app.setTypeface(font_style); title_app.setText("GRUBBER");
-   * 
-   * actionBar.setCustomView(actionBar_view); actionBar.setDisplayShowCustomEnabled(true); }
-   */
-
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.

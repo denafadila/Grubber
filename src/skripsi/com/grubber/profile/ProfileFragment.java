@@ -197,7 +197,7 @@ public class ProfileFragment extends Fragment {
     setRetainInstance(true);
 
     // go to own profile
-    if (getActivity().getIntent().getStringExtra(USER_OBJECT_ID) == null) {
+    if (getArguments() == null) {
       get_requestedUpId = User.getCurrentUser().getObjectId();
       Log.d(TAG, String.format("ProfileActivity is called for UserProfile %s", get_requestedUpId));
       get_username = User.getCurrentUser().getUserName();
