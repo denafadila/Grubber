@@ -28,7 +28,8 @@ import skripsi.com.grubber.R;
 import skripsi.com.grubber.dao.RestaurantDao;
 import skripsi.com.grubber.gps.LocationUtils;
 import skripsi.com.grubber.model.Restaurant;
-import skripsi.com.grubber.restaurant.RestaurantProfileActivity;
+import skripsi.com.grubber.restaurant.RestaurantActivity;
+import skripsi.com.grubber.timeline.TimelineActivity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -692,7 +693,7 @@ public class GMapActivity extends FragmentActivity implements LocationListener,
           // TODO Auto-generated method stub
           arg0.showInfoWindow();
           if (markerMap.containsKey(arg0)) {
-            Intent intent = new Intent(GMapActivity.this, RestaurantProfileActivity.class);
+            Intent intent = new Intent(GMapActivity.this, RestaurantActivity.class);
             intent.putExtra("restObject", markerMap.get(arg0));
             intent.putExtra("restId", markerMap.get(arg0).getObjectId());
             intent.putExtra("restName", markerMap.get(arg0).getName());
@@ -840,7 +841,9 @@ public class GMapActivity extends FragmentActivity implements LocationListener,
       // Refresh coordinates
       return true;
     case R.id.action_back:
-      finish();
+      this.finish();
+      Intent intent = new Intent(this, TimelineActivity.class);
+      startActivity(intent);
       return true;
     default:
       return super.onOptionsItemSelected(item);

@@ -7,13 +7,12 @@ import skripsi.com.grubber.dao.ActivityDao;
 import skripsi.com.grubber.image.ImageLoader;
 import skripsi.com.grubber.model.Activity;
 import skripsi.com.grubber.model.User;
-import skripsi.com.grubber.profile.ProfileFragment;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -33,6 +32,9 @@ public class SearchListAdapter extends BaseAdapter {
   public static final String USER_USERNAME = "username";
   public TextView tvUserName, tvAbout;
   ImageLoader imageLoader;
+
+  boolean isSearch = false;
+
   public ImageView ivProf;
   private ToggleButton btnFollowUser;
   private List<Activity> listAct;
@@ -43,12 +45,13 @@ public class SearchListAdapter extends BaseAdapter {
   // Perubahan 1.. Parameter diberi tambahan listUser sebagai hasil dari search follow pada class
   // ActivityDao
   public SearchListAdapter(Context context, List<Activity> listAct, List<User> listUser,
-      List<ParseUser> listParseUser) {
+      List<ParseUser> listParseUser, boolean isSearch) {
     // TODO Auto-generated constructor stub
     this.context = context;
     this.listUser = listUser;
     this.listParseUser = listParseUser;
     this.listAct = listAct;
+    this.isSearch = isSearch;
     imageLoader = new ImageLoader(context);
   }
 
@@ -88,91 +91,92 @@ public class SearchListAdapter extends BaseAdapter {
     tvAbout = (TextView) v.findViewById(R.id.aboutme);
     btnFollowUser = (ToggleButton) v.findViewById(R.id.btnfollow);
 
-    if (listUser != null && listAct != null) {
-      Log.v(TAG, "aint null");
-    } else {
-      Log.v(TAG, "null");
-    }
+    // if listAct != null && listUser == null && search == true = search for self
+    // if listAct != null || search == false = open userProfile from notif, stalk/leave tab
+    // if listAct != null || search == true = open userProfile from search
+
     if (listUser == null) {
-      ParseFile pp = (ParseFile) listParseUser.get(position).getParseFile("profilePic");
-      final String imageUrl = pp.getUrl();
-      imageLoader.DisplayImage(imageUrl, ivProf);
-      tvUserName.setText(listParseUser.get(position).getUsername());
-      tvAbout.setText(listParseUser.get(position).getString("aboutMe"));
+      if (listAct != null || isSearch == false) {
+        ParseFile pp = (ParseFile) listParseUser.get(position).getParseFile("profilePic");
+        final String imageUrl = pp.getUrl();
+        imageLoader.DisplayImage(imageUrl, ivProf);
+        tvUserName.setText(listParseUser.get(position).getUsername());
+        tvAbout.setText(listParseUser.get(position).getString("aboutMe"));
+      } else {
+        tvUserName.setText("No user found");
+      }
+    } else if (listAct != null && listUser == null && isSearch == true) {
+      new AlertDialog.Builder(context).setTitle("Search User").setMessage("User not found")
+          .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+              // continue with delete
+            }
+          }).setIcon(android.R.drawable.ic_dialog_alert).show();
+
     } else {
       ParseFile pp = (ParseFile) listUser.get(position).getPhoto();
       final String imageUrl = pp.getUrl();
 
       imageLoader.DisplayImage(imageUrl, ivProf);
       tvUserName.setText(listUser.get(position).getUserName());
-      tvUserName.setOnClickListener(new OnClickListener() {
 
-        @Override
-        public void onClick(View v) {
-          // TODO Auto-generated method stub
-          Intent intent = new Intent(context, ProfileFragment.class);
-          Log.v(TAG, "Lets go getthem!!" + listUser.get(position));
-          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-          intent.putExtra(USER_OBJECT_ID, listUser.get(position).getObjectId());
-          intent.putExtra(USER_USERNAME, listUser.get(position).getUserName());
-          context.startActivity(intent);
-        }
-      });
       tvAbout.setText(listUser.get(position).getAboutMe());
 
-      Log.v(TAG, "position = " + position);
       if (listAct != null) {
         for (int i = 0; i < listAct.size(); i++) {
-          Log.v(TAG, "listAct = " + listAct.get(i).getTargetUserProfile().getUserName());
-          Log.v(TAG, "listUser = " + listUser.get(position).getUserName());
-          if (listAct.get(i).getTargetUserProfile().getUserName()
-              .equals(listUser.get(position).getUserName())) {
-
+          // Log.v(
+          // TAG,
+          // "#" + i + ". " + listAct.get(i).getObjectId() + " Is "
+          // + listAct.get(i).getTargetParseUserProfile().toString() + " & "
+          // + listUser.get(position).getParseUser().toString() + " the same ?");
+          if (listAct.get(i).getTargetParseUserProfile() == listUser.get(position).getParseUser()) {
             Log.v(TAG, "Found followed!");
-            btnFollowUser.getTextOff();
-            btnFollowUser.setOnClickListener(new View.OnClickListener() {
-
-              @Override
-              public void onClick(View v) {
-                // TODO Auto-generated method stub
-                Log.v(TAG, "Unfollow Succeed");
-                List<ParseObject> toUnfollow = null;
-                try {
-                  toUnfollow = ActivityDao.getFollowPeopleToRemove(listUser.get(position),
-                      User.getCurrentUser());
-                } catch (ParseException e) {
-                  // TODO Auto-generated catch block
-                  e.printStackTrace();
-                }
-                try {
-                  ParseObject.deleteAll(toUnfollow);
-                  Log.v(TAG, "Unfollow After Succeed");
-                  Toast.makeText(context, "Unfollowed", Toast.LENGTH_LONG).show();
-                } catch (ParseException e) {
-                  // TODO Auto-generated catch block
-                  e.printStackTrace();
-                }
-              }
-            });
+            btnFollowUser.setChecked(true);
           } else {
             Log.v(TAG, "Not Found followed!");
-            btnFollowUser.setOnClickListener(new View.OnClickListener() {
-
-              @Override
-              public void onClick(View v) {
-                // TODO Auto-generated method stub
-                Log.v(TAG, "Follow Succeed");
-                ActivityDao.createNewFollow(listUser.get(position), User.getCurrentUser(), "Unread");
-                Log.v(TAG, "Follow After Succeed");
-                Toast.makeText(context, "Followed", Toast.LENGTH_LONG).show();
-              }
-            });
           }
         }
 
       } else {
         Log.v(TAG, "Called by User Profile");
       }
+    }
+
+    if (btnFollowUser.isChecked() == true) {
+      btnFollowUser.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          // TODO Auto-generated method stub
+          Log.v(TAG, "Unfollow Succeed");
+          List<ParseObject> toUnfollow = null;
+          try {
+            toUnfollow = ActivityDao.getFollowPeopleToRemove(listUser.get(position),
+                User.getCurrentUser());
+          } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+          try {
+            ParseObject.deleteAll(toUnfollow);
+            Log.v(TAG, "Unfollow After Succeed");
+            Toast.makeText(context, "Unfollowed", Toast.LENGTH_LONG).show();
+          } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+      });
+    } else if (btnFollowUser.isChecked() == false) {
+      btnFollowUser.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+          // TODO Auto-generated method stub
+          Log.v(TAG, "Follow Succeed");
+          ActivityDao.createNewFollow(listUser.get(position), User.getCurrentUser(), "Unread");
+          Log.v(TAG, "Follow After Succeed");
+          Toast.makeText(context, "Followed", Toast.LENGTH_LONG).show();
+        }
+      });
     }
     return v;
   }

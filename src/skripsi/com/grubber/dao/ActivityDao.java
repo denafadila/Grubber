@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import skripsi.com.android.Utility;
 import skripsi.com.grubber.model.Activity;
 import skripsi.com.grubber.model.AuditableParseObject;
 import skripsi.com.grubber.model.Restaurant;
@@ -443,7 +442,8 @@ public class ActivityDao {
     List<Activity> result = null;
     try {
       result = pqFindAct.find();
-      Log.v(TAG, String.format("Search act found %s records", result == null ? 0 : result.size()));
+      Log.v(TAG, String.format("Search followed user found %s records",
+          result == null ? 0 : result.size()));
     } catch (ParseException e) {
       Log.v(TAG, "Problem in retrieving people", e);
       throw e;
@@ -468,31 +468,16 @@ public class ActivityDao {
 
   public static List<User> searchByPeople(String searchKeyword, User currentUserProfile)
       throws ParseException {
-    String regex = Utility.convertStringToRegex(searchKeyword);
-
-    ParseQuery<ParseUser> pqFullName = ParseQuery.getQuery(ParseUser.class).whereMatches(
-        User.FULL_NAME, regex, "i");
-    ParseQuery<ParseUser> pqScreenName = ParseQuery.getQuery(ParseUser.class).whereMatches(
-        User.USERNAME, regex, "i");
-    ParseQuery<ParseUser> pqAboutMe = ParseQuery.getQuery(ParseUser.class).whereMatches(
-        User.ABOUT_ME, regex, "i");
-    ParseQuery<ParseUser> pqExcludeMe = ParseQuery.getQuery(ParseUser.class).whereNotEqualTo(
-        User.USERNAME, currentUserProfile.getUserName());
+    ParseQuery<ParseUser> queryUsername = ParseUser.getQuery();
+    queryUsername.whereMatches("username", searchKeyword);
 
     List<ParseQuery<ParseUser>> queries = new ArrayList<ParseQuery<ParseUser>>();
-    queries.add(pqExcludeMe);
-    queries.add(pqFullName);
-    queries.add(pqScreenName);
-    queries.add(pqAboutMe);
+    queries.add(queryUsername);
 
     ParseQuery<ParseUser> pqAll = ParseQuery.or(queries);
-    pqAll.orderByAscending(User.FULL_NAME);
     pqAll.addAscendingOrder(User.USERNAME);
-    pqAll.addAscendingOrder(User.ABOUT_ME);
-    pqAll.whereNotEqualTo(User.USERNAME, currentUserProfile.getUserName());
 
-    pqAll.setLimit(10);
-
+    pqAll.setLimit(20);
     pqAll.include(User.PARSE_USER);
 
     List<User> result = null;

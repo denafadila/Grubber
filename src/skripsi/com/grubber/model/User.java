@@ -58,7 +58,7 @@ public class User {
   }
 
   public String getUserName() {
-    return this.parseUser.getString(USERNAME);
+    return this.parseUser.getUsername();
   }
 
   public void setUserName(String username) {

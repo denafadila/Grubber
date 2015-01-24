@@ -14,6 +14,7 @@ import skripsi.com.grubber.dao.RestaurantDao;
 import skripsi.com.grubber.image.ImageLoader;
 import skripsi.com.grubber.model.Restaurant;
 import skripsi.com.grubber.model.User;
+import skripsi.com.grubber.timeline.TimelineActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -227,5 +228,14 @@ public class RestaurantActivity extends BaseActivity {
     default:
       return super.onOptionsItemSelected(item);
     }
+  }
+
+  @Override
+  public void onBackPressed() {
+    // TODO Auto-generated method stub
+    super.onBackPressed();
+    Intent intent = new Intent(this, TimelineActivity.class);
+    startActivity(intent);
+    this.finish();
   }
 }

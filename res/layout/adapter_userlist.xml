@@ -17,7 +17,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/list_notif"
-        android:descendantFocusability="afterDescendants"
+        android:clickable="false"
+        android:descendantFocusability="blocksDescendants"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:paddingBottom="10dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
@@ -55,9 +58,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:textOn="Stalk"
-            android:textOff="Leave"
             android:gravity="center"
+            android:textOff="Stalk"
+            android:textOn="Leave"
             android:textSize="12sp" />
     </RelativeLayout>
 

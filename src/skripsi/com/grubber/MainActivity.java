@@ -208,4 +208,13 @@ public class MainActivity extends GrubberActivity implements
     }
 
   }
+
+  @Override
+  public void onSuccessfulEdit() {
+    // TODO Auto-generated method stub
+    // successful edit
+    Log.d(TAG, "Returned to MainActivity after successful edit");
+    Intent intent = new Intent(this, TimelineActivity.class);
+    startActivity(intent);
+  }
 }

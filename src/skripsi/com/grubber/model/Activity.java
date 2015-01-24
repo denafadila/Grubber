@@ -134,6 +134,10 @@ public class Activity extends AuditableParseObject {
     return new User((ParseUser) get(TARGET_USER_PROFILE));
   }
 
+  public ParseUser getTargetParseUserProfile() {
+    return ((ParseUser) get(TARGET_USER_PROFILE));
+  }
+
   public void setTargetUser(User targetUserProfile) {
     put(TARGET_USER_PROFILE, targetUserProfile.getParseUser());
   }

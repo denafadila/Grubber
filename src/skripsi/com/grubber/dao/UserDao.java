@@ -54,6 +54,22 @@ public class UserDao extends ParseObject {
     return user;
   }
 
+  public static void updateUser(User user, String fullname, String email, String about,
+      String password, byte[] photo) throws ParseException {
+    user.setEmail(email);
+    user.setFullName(fullname);
+    user.setAboutMe(about);
+    user.getParseUser().setPassword(password);
+    if (photo != null) {
+      ParseFile pp = new ParseFile(fullname.concat(".jpg"), photo);
+      pp.save();
+      Log.d(TAG, "Done saving profile photo file");
+      user.setPhoto(pp);
+    }
+    user.getParseUser().saveInBackground();
+    Log.d(TAG, "Done updating profile");
+  }
+
   public static int getRevCountById(ParseUser userId) throws ParseException {
 
     ParseQuery<Activity> pqAll = new ParseQuery<Activity>("Activity");

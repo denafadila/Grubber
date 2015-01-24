@@ -12,6 +12,7 @@ import skripsi.com.android.Utility;
 import skripsi.com.android.widget.Validate;
 import skripsi.com.grubber.dao.UserDao;
 import skripsi.com.grubber.model.User;
+import skripsi.com.grubber.timeline.TimelineActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -39,6 +40,7 @@ import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
@@ -49,6 +51,7 @@ public class RegisterFragment extends Fragment {
   private static final String TAG = RegisterFragment.class.getSimpleName();
 
   private OnFragmentInteractionListener mListener;
+  private boolean isEdit = false;
 
   // private ImageButton mPhoto = null;
   private byte[] photoBitmap = null;
@@ -61,7 +64,7 @@ public class RegisterFragment extends Fragment {
   private EditText mUsername = null;
   private EditText mFullName = null;
   private EditText mAboutMe = null;
-  private ImageView gambar = null;
+  private ImageView mPhoto = null;
   // private CheckBox mAgree = null;
   // private TextView mTnC = null;
   private Button btnSubmit = null;
@@ -69,6 +72,8 @@ public class RegisterFragment extends Fragment {
   // private ProgressBarDialogFragment mProgressDialog = null;
   private Bundle bundle;
   private boolean mIsSubmitting = false;
+
+  private UpdateProfileTask mUpdateProfileTask;
 
   public static final int REQUEST_CODE_CROP_IMAGE = 0x3;
   private File mFileTemp;
@@ -97,6 +102,9 @@ public class RegisterFragment extends Fragment {
     if (ParseUser.getCurrentUser() != null) {
       getActivity().supportInvalidateOptionsMenu();
     }
+    if (getArguments() != null) {
+      isEdit = getArguments().getBoolean("editMode");
+    }
   }
 
   @Override
@@ -107,21 +115,26 @@ public class RegisterFragment extends Fragment {
     mProgressDialog = new ProgressBarDialogFragment();
     mProgressDialog.setCancelable(false);
 
-    /*
-     * mProgressDialog = new ProgressBarDialogFragment(); mProgressDialog.setCancelable(false);
-     */
-    // mPhoto = (ImageButton) view.findViewById(R.id.ibRegistrationPhoto);
-    gambar = (ImageView) view.findViewById(R.id.gambar);
-    gambar.setOnClickListener(new View.OnClickListener() {
+    mPhoto = (ImageView) view.findViewById(R.id.gambar);
+    mEmail = (EditText) view.findViewById(R.id.etRegistrationEmail);
+    mPassword = (EditText) view.findViewById(R.id.etRegistrationPassword);
+    mPassword2 = (EditText) view.findViewById(R.id.etRegistrationPassword2);
+    mUsername = (EditText) view.findViewById(R.id.etRegistrationUserName);
+    mFullName = (EditText) view.findViewById(R.id.etRegistrationFullName);
+    mAboutMe = (EditText) view.findViewById(R.id.etRegistrationAboutMe);
+    btnSubmit = (Button) view.findViewById(R.id.btnSubmit);
+    btnCancel = (Button) view.findViewById(R.id.btnCancel);
+
+    mPhoto.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         setPhoto();
       }
     });
-    gambar.setOnLongClickListener(new View.OnLongClickListener() {
+    mPhoto.setOnLongClickListener(new View.OnLongClickListener() {
       @Override
       public boolean onLongClick(View v) {
-        gambar.setImageResource(R.drawable.ic_launcher_new);
+        mPhoto.setImageResource(R.drawable.ic_launcher_new);
         if (photoBitmap != null) {
           photoBitmap = null;
         }
@@ -133,7 +146,6 @@ public class RegisterFragment extends Fragment {
       }
     });
 
-    mEmail = (EditText) view.findViewById(R.id.etRegistrationEmail);
     mEmail.setFilters(new InputFilter[] { new LengthFilter(100) });
     mEmail.setOnFocusChangeListener(new View.OnFocusChangeListener() {
       @Override
@@ -143,9 +155,6 @@ public class RegisterFragment extends Fragment {
         }
       }
     });
-    // tvPass = (TextView) view.findViewById(R.id.tvRegistrationPassword);
-    // tvPass2 = (TextView) view.findViewById(R.id.tvRegistrationPassword2);
-    mPassword = (EditText) view.findViewById(R.id.etRegistrationPassword);
     mPassword.setFilters(new InputFilter[] { new LengthFilter(33) });
     mPassword.setOnFocusChangeListener(new View.OnFocusChangeListener() {
       @Override
@@ -156,7 +165,6 @@ public class RegisterFragment extends Fragment {
       }
     });
 
-    mPassword2 = (EditText) view.findViewById(R.id.etRegistrationPassword2);
     mPassword2.setFilters(new InputFilter[] { new LengthFilter(33) });
     mPassword2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
       @Override
@@ -167,7 +175,6 @@ public class RegisterFragment extends Fragment {
       }
     });
 
-    mUsername = (EditText) view.findViewById(R.id.etRegistrationUserName);
     mUsername.setFilters(new InputFilter[] { new LengthFilter(33) });
     mUsername.setOnFocusChangeListener(new View.OnFocusChangeListener() {
       @Override
@@ -178,7 +185,6 @@ public class RegisterFragment extends Fragment {
       }
     });
 
-    mFullName = (EditText) view.findViewById(R.id.etRegistrationFullName);
     mFullName.setFilters(new InputFilter[] { new LengthFilter(33) });
     mFullName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
       @Override
@@ -189,7 +195,6 @@ public class RegisterFragment extends Fragment {
       }
     });
 
-    mAboutMe = (EditText) view.findViewById(R.id.etRegistrationAboutMe);
     mAboutMe.setOnFocusChangeListener(new View.OnFocusChangeListener() {
       @Override
       public void onFocusChange(View v, boolean hasFocus) {
@@ -199,17 +204,19 @@ public class RegisterFragment extends Fragment {
       }
     });
 
-    btnSubmit = (Button) view.findViewById(R.id.btnSubmit);
     btnSubmit.setOnClickListener(new OnClickListener() {
 
       @Override
       public void onClick(View arg0) {
         // TODO Auto-generated method stub
-        submitRegistration();
+        if (isEdit) {
+          submitEdit();
+        } else {
+          submitRegistration();
+        }
       }
     });
 
-    btnCancel = (Button) view.findViewById(R.id.btnCancel);
     btnCancel.setOnClickListener(new OnClickListener() {
 
       @Override
@@ -246,23 +253,15 @@ public class RegisterFragment extends Fragment {
   public boolean onOptionsItemSelected(MenuItem item) {
     int itemId = item.getItemId();
     if (itemId == R.id.miRegistrationOk) {
-      submitRegistration();
+      if (!isEdit) {
+        submitRegistration();
+      } else {
+        submitEdit();
+      }
     } else if (itemId == R.id.miRegistrationCancel) {
       getActivity().onBackPressed();
     }
     return super.onOptionsItemSelected(item);
-  }
-
-  private void updateView() {
-    // control visibility
-    // in registration mode
-    mEmail.setEnabled(true);
-    mUsername.setEnabled(true);
-    mFullName.setEnabled(true);
-    // normal editable mode
-    // mPhoto.setEnabled(true);
-    mAboutMe.setEnabled(true);
-
   }
 
   private void startCropImage() {
@@ -338,7 +337,7 @@ public class RegisterFragment extends Fragment {
 
       bitmap = BitmapFactory.decodeFile(mFileTemp.getPath());
       rescaleImage(bitmap);
-      gambar.setImageBitmap(bitmap);
+      mPhoto.setImageBitmap(bitmap);
       break;
     }
 
@@ -377,6 +376,15 @@ public class RegisterFragment extends Fragment {
     } else {
       new RegisterTask().execute();
     }
+  }
+
+  private void submitEdit() {
+    // TODO Auto-generated method stub
+    mIsSubmitting = true;
+    getActivity().supportInvalidateOptionsMenu();
+    updateProfile(Utility.getTrimmedText(mFullName.getText()),
+        Utility.getTrimmedText(mPassword.getText()), Utility.getTrimmedText(mAboutMe.getText()),
+        Utility.getTrimmedText(mEmail.getText()), photoBitmap);
   }
 
   protected void showToS() {
@@ -488,12 +496,12 @@ public class RegisterFragment extends Fragment {
   @Override
   public void onAttach(Activity activity) {
     super.onAttach(activity);
-    try {
-      mListener = (OnFragmentInteractionListener) activity;
-    } catch (ClassCastException e) {
-      throw new ClassCastException(activity.toString()
-          + " must implement OnFragmentInteractionListener");
-    }
+    // try {
+    // mListener = (OnFragmentInteractionListener) activity;
+    // } catch (ClassCastException e) {
+    // throw new ClassCastException(activity.toString()
+    // + " must implement OnFragmentInteractionListener");
+    // }
   }
 
   @Override
@@ -507,6 +515,7 @@ public class RegisterFragment extends Fragment {
 
     public void onLoginAction(User user);
 
+    public void onSuccessfulEdit();
   }
 
   class RegisterTask extends AsyncTask<Void, Void, Void> {
@@ -552,6 +561,92 @@ public class RegisterFragment extends Fragment {
       Utility.unlockScreenOrientation(getActivity());
       mProgressDialog.dismiss();
       mListener.onSuccessfulRegistration();
+    }
+  }
+
+  public void updateProfile(String fullname, String password, String aboutMe, String email,
+      byte[] photo) {
+
+    mUpdateProfileTask = new UpdateProfileTask(fullname, password, aboutMe, email, photo);
+    mUpdateProfileTask.execute();
+    Log.i(TAG, "Initiated profile update");
+  }
+
+  class UpdateProfileTask extends AsyncTask<Void, Void, Void> {
+    private User user = null;
+    private byte[] photo;
+    private Bitmap photoThumbnail;
+    private Exception e;
+
+    public UpdateProfileTask(String fullname, String password, String about, String email,
+        byte[] photo) {
+
+      Log.v(TAG, "Executing edit ->" + User.getCurrentUser().getParseUser());
+      user = User.getCurrentUser();
+      user.setParseUser(User.getCurrentUser().getParseUser());
+      user.setFullName(fullname);
+      user.getParseUser().setPassword(password);
+      user.setAboutMe(about);
+      user.setEmail(email);
+      if (photo != null) {
+        ParseFile pp = new ParseFile(fullname.concat(".jpg"), photo);
+        try {
+          pp.save();
+        } catch (ParseException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+        Log.d(TAG, "Done saving profile photo file");
+        user.setPhoto(pp);
+      }
+    }
+
+    @Override
+    protected Void doInBackground(Void... params) {
+      try {
+        UserDao.updateUser(user, Utility.getTrimmedText(mFullName.getText()), mEmail.getText()
+            .toString().trim(), Utility.getTrimmedText(mAboutMe.getText()), mPassword.getText()
+            .toString().trim(), photo);
+      } catch (ParseException e) {
+        Log.w(TAG, "Problem while updating user profile", e);
+        this.e = e;
+      }
+      return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void result) {
+      Intent intent = new Intent(getActivity(), TimelineActivity.class);
+      startActivity(intent);
+    }
+  }
+
+  public void updateView() {
+    if (isEdit) {
+
+      mPhoto.setImageBitmap(bitmap);
+      mEmail.setText(User.getCurrentUser().getEmail());
+      mUsername.setText(User.getCurrentUser().getUserName());
+      mFullName.setText(User.getCurrentUser().getFullName());
+      mAboutMe.setText(User.getCurrentUser().getAboutMe());
+    }
+
+    if (mIsSubmitting) {
+      // submit is in progress
+      mPhoto.setEnabled(false);
+      mFullName.setEnabled(false);
+      mEmail.setEnabled(false);
+      mUsername.setEnabled(false);
+      mAboutMe.setEnabled(false);
+
+    } else {
+      // normal editable mode
+      mPhoto.setEnabled(true);
+      mFullName.setEnabled(true);
+      mAboutMe.setEnabled(true);
+      mEmail.setEnabled(true);
+      mUsername.setEnabled(false);
+
     }
   }
 

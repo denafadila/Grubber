@@ -48,27 +48,35 @@
                 android:textStyle="italic"
                 android:typeface="serif" />
         </LinearLayout>
+    </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/rlSetting"
+    <RelativeLayout
+        android:id="@+id/rlSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_tab_black"
+        android:layout_below="@+id/llProfileName"
+        android:layout_gravity="right" >
+
+        <ImageView
+            android:id="@+id/Btnhelp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_toRightOf="@+id/llProfileName" >
+            android:src="@drawable/help" />
 
-            <ImageView
-                android:id="@+id/Btnhelp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/help" />
+        <ImageView
+            android:id="@+id/BtnLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/Btnhelp"
+            android:src="@drawable/logout" />
 
-            <ImageView
-                android:id="@+id/BtnLogout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/Btnhelp"
-                android:src="@drawable/logout" />
-        </RelativeLayout>
+        <ImageView
+            android:id="@+id/BtnUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/BtnLogout"
+            android:src="@drawable/setting" />
     </RelativeLayout>
 
     <LinearLayout
@@ -91,22 +99,23 @@
             android:id="@+id/searchField"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:weightSum="2"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:weightSum="2" >
 
             <EditText
                 android:id="@+id/ETsearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="#000000"
-                android:hint="Search for user" />
-            <Button 
+                android:hint="Search for user"
+                android:textColor="#000000" />
+
+            <Button
                 android:id="@+id/btnSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Search"/>
+                android:text="Search" />
         </LinearLayout>
     </LinearLayout>
 
@@ -156,13 +165,15 @@
         android:id="@+id/LLlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:orientation="horizontal" >
 
         <ListView
             android:id="@+id/lvUserProfile"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false" >
         </ListView>
     </LinearLayout>
 
