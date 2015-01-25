@@ -98,7 +98,7 @@ public class RestaurantActivity extends BaseActivity {
      */
 
     LayoutInflater inflater = LayoutInflater.from(this);
-    View view = inflater.inflate(R.layout.single_post_header, null);
+    View view = inflater.inflate(R.layout.single_post_header_rest, null);
 
     // tvUser = (TextView) findViewById(R.id.username);
     tvRestAddress = (TextView) view.findViewById(R.id.restaurant);

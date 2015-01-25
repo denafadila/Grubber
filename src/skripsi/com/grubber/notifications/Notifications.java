@@ -111,6 +111,8 @@ public class Notifications extends Fragment {
               getActivity().startActivity(intent);
             } else {
               Bundle bundle = new Bundle();
+              bundle.putString("commentStatus", "Read");
+              Log.d("commentStatus", "Read");
               bundle.putString("objectId", mResult.get(position).getCreatedBy().getObjectId());
               bundle.putString("userName", mResult.get(position).getCreatedBy().getUsername());
               Fragment fragment = new ProfileFragment();

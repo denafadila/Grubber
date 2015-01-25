@@ -1,10 +1,14 @@
 package skripsi.com.grubber.trending;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import skripsi.com.grubber.R;
 import skripsi.com.grubber.adapter.TrendingAdapter;
 import skripsi.com.grubber.dao.ActivityDao;
+import skripsi.com.grubber.dao.RestaurantDao;
+import skripsi.com.grubber.image.ImageLoader;
 import skripsi.com.grubber.model.Restaurant;
 import android.app.AlertDialog;
 import android.graphics.Typeface;
@@ -16,33 +20,49 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.ParseException;
+import com.parse.ParseFile;
 
 public class TrendingFragment extends Fragment {
   public static final String TAG = TrendingFragment.class.getSimpleName();
 
   public TextView tvRate, tvCash, tvPop;
+  public TextView tvName, tvAddress, tvCity, tvDesc;
   public ListView lvList;
+  private List<Restaurant> mRandRest = new ArrayList<Restaurant>();
   private List<Restaurant> mRest = null;
   private TrendingAdapter mTrendAdapter;
-  private String buttonPressed = "none";
+  private String buttonPressed = "pop";
   private TrendingTask trendTask;
+  private LoadRandomRest randTask;
+
+  ImageView profilePic;
+  ImageLoader imageLoader = new ImageLoader(getActivity());
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     // TODO Auto-generated method stub
-
     super.onCreate(savedInstanceState);
+
+    randTask = new LoadRandomRest();
+    randTask.execute();
   }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     // TODO Auto-generated method stub
     View view = inflater.inflate(R.layout.fragment_trending, container, false);
+
+    tvName = (TextView) view.findViewById(R.id.tvName);
+    tvAddress = (TextView) view.findViewById(R.id.tvAddress);
+    tvCity = (TextView) view.findViewById(R.id.tvCity);
+    tvDesc = (TextView) view.findViewById(R.id.tvDesc);
+    profilePic = (ImageView) view.findViewById(R.id.ibProfilePhoto);
 
     lvList = (ListView) view.findViewById(R.id.lvTrending);
     tvRate = (TextView) view.findViewById(R.id.tvRate);
@@ -113,6 +133,7 @@ public class TrendingFragment extends Fragment {
     @Override
     protected List<Restaurant> doInBackground(Void... params) {
       Log.v(TAG, "+++ SearchTrendRate.doInBackground() called! +++");
+
       List<Restaurant> result = null;
       try {
         if (buttonPressed.equals("rate")) {
@@ -157,4 +178,59 @@ public class TrendingFragment extends Fragment {
     }
   }
 
+  class LoadRandomRest extends AsyncTask<Void, Void, List<Restaurant>> {
+
+    @Override
+    protected List<Restaurant> doInBackground(Void... params) {
+      // TODO Auto-generated method stub
+      List<Restaurant> result = null;
+      try {
+        result = RestaurantDao.getRest();
+      } catch (ParseException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      mRandRest.addAll(result);
+      return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+     */
+    @Override
+    protected void onPostExecute(List<Restaurant> result) {
+      // TODO Auto-generated method stub
+      super.onPostExecute(result);
+      int position = randInt(0, mRandRest.size());
+      ParseFile pp = (ParseFile) mRandRest.get(position).getParseFile("photoRest");
+      final String imageUrl = pp.getUrl();
+      Log.v(TAG, "1 or 2 " + imageUrl.toString() + profilePic.toString());
+
+      imageLoader.DisplayImage(imageUrl, profilePic);
+
+      tvName.setText(mRandRest.get(position).getName());
+      tvAddress.setText(mRandRest.get(position).getAddress());
+      tvCity.setText(mRandRest.get(position).getCity());
+      tvDesc.setText(mRandRest.get(position).getDesc());
+
+      trendTask = new TrendingTask();
+      trendTask.execute();
+    }
+
+  }
+
+  public static int randInt(int min, int max) {
+
+    // NOTE: Usually this should be a field rather than a method
+    // variable so that it is not re-seeded every call.
+    Random rand = new Random();
+
+    // nextInt is normally exclusive of the top value,
+    // so add 1 to make it inclusive
+    int randomNum = rand.nextInt((max - min) + 1) + min;
+
+    return randomNum;
+  }
 }
