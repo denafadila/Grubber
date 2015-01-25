@@ -20,14 +20,12 @@ public class ActivityDao {
 
   private static final String TAG = ActivityDao.class.getSimpleName();
 
-  public static Activity createNewPost(String content, User up, Restaurant rest, String rName,
-      String restId, double cash, double rate) {
+  public static Activity createNewPost(String content, User up, Restaurant restId, double cash,
+      double rate) {
 
     Activity activity = new Activity();
     activity.setType(Activity.TYPE_REVIEW);
-    activity.setRestObject(rest);
-    activity.setRestId(restId);
-    activity.setRestName(rName);
+    activity.setRestoId(restId);
     activity.setCash(cash);
     activity.setRate(rate);
     activity.setContent(content);
@@ -81,11 +79,11 @@ public class ActivityDao {
     return result;
   }
 
-  public static List<Activity> getRestReviews(String restId) throws ParseException {
+  public static List<Activity> getRestReviews(Restaurant rest) throws ParseException {
     // posting by self
 
     ParseQuery<Activity> pq = ParseQuery.getQuery(Activity.class);
-    pq.whereMatches(Activity.REST, restId);
+    pq.whereEqualTo(Activity.REST, rest);
     pq.whereEqualTo(Activity.TYPE, Activity.TYPE_REVIEW);
 
     // include only supported types

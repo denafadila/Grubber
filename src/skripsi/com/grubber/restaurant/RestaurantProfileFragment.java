@@ -266,7 +266,7 @@ public class RestaurantProfileFragment extends Fragment implements FragmentChang
       try {
         // first step is load user reviews
         Log.v(TAG, "Sending " + mRestIdString + " away to get review!");
-        up = ActivityDao.getRestReviews(mRestIdString);
+        up = ActivityDao.getRestReviews(mDataRest);
         Log.v(TAG, "Size up = " + up.size());
         mAct = up;
         if (up == null) {

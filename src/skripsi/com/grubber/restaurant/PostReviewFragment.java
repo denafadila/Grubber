@@ -3,6 +3,7 @@ package skripsi.com.grubber.restaurant;
 import skripsi.com.grubber.R;
 import skripsi.com.grubber.adapter.RestaurantProfileAdapter;
 import skripsi.com.grubber.dao.ActivityDao;
+import skripsi.com.grubber.dao.RestaurantDao;
 import skripsi.com.grubber.model.Restaurant;
 import skripsi.com.grubber.model.User;
 import skripsi.com.grubber.restaurant.RestaurantProfileActivity.FragmentChangeListener;
@@ -21,6 +22,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RatingBar;
 
+import com.parse.ParseException;
+
 public class PostReviewFragment extends FragmentActivity implements FragmentChangeListener {
   private final static String TAG = RestaurantProfileFragment.class.getSimpleName();
 
@@ -33,6 +36,7 @@ public class PostReviewFragment extends FragmentActivity implements FragmentChan
   private RatingBar mCashBar = null;
   private RatingBar mRateBar = null;
   private Button mPostBtn = null;
+  private Button mCancelBtn = null;
 
   // temp to be filled by user
   private String content;
@@ -55,9 +59,23 @@ public class PostReviewFragment extends FragmentActivity implements FragmentChan
     // TODO Auto-generated method stub
     super.onCreate(savedInstanceState);
     setContentView(R.layout.fragment_postreview);
+    if (savedInstanceState == null) {
+      Intent intent = getIntent();
+      mStringRestId = intent.getStringExtra("restId");
+      if (mStringRestId == null) {
+        Log.v(TAG, "Bundle is null!");
+      } else {
+        try {
+          mDataRest = RestaurantDao.getRestProfileById(mStringRestId);
+        } catch (ParseException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      }
+    }
     mRestRev = (EditText) findViewById(R.id.etReviewBox);
-    mCashBar = (RatingBar) findViewById(R.id.rbCash);
-    mRateBar = (RatingBar) findViewById(R.id.rbRate);
+    mCashBar = (RatingBar) findViewById(R.id.cashBar);
+    mRateBar = (RatingBar) findViewById(R.id.ratingBar);
     mPostBtn = (Button) findViewById(R.id.btnPost);
     mPostBtn.setOnClickListener(new OnClickListener() {
 
@@ -70,39 +88,19 @@ public class PostReviewFragment extends FragmentActivity implements FragmentChan
         mPostReviewTask.execute();
       }
     });
-    if (savedInstanceState == null) {
-      Intent intent = getIntent();
-      Bundle bundle = new Bundle();
-      bundle = intent.getBundleExtra("restId");
-      if (bundle == null) {
-        Log.v(TAG, "Bundle is null!");
-      } else {
-        mDataRest = (Restaurant) bundle.getSerializable("objectRest");
-        mStringRestName = mDataRest.getName();
-        mStringRestId = mDataRest.getObjectId();
-        if (mDataRest == null) {
-          Log.v(TAG, "mDataRest == null!");
-        } else {
-          Log.v(TAG, "CURIGA -> mDataRest = " + mDataRest + " + " + mDataRest.getName());
-        }
+    mCancelBtn = (Button) findViewById(R.id.btnCancel);
+    mCancelBtn.setOnClickListener(new OnClickListener() {
+
+      @Override
+      public void onClick(View v) {
+        // TODO Auto-generated method stub
+        Intent intent = new Intent(getBaseContext(), RestaurantActivity.class);
+        intent.putExtra("restId", mStringRestId);
+        startActivity(intent);
       }
+    });
 
-    }
   }
-
-  // @Override
-  // public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
-  // savedInstanceState) {
-  // View view = inflater.inflate(R.layout.fragment_postreview, container, false);
-  // return view;
-  // }
-  //
-  // @Override
-  // public void onActivityCreated(Bundle savedInstanceState) {
-  // // TODO Auto-generated method stub
-  // super.onActivityCreated(savedInstanceState);
-  // getRestView();
-  // }
 
   public void getRestView() {
 
@@ -130,8 +128,7 @@ public class PostReviewFragment extends FragmentActivity implements FragmentChan
       try {
         if (content != null && mDataRest != null && cash >= 0 && rate >= 0
             && mDataRest.getName() != null && mDataRest.getObjectId() != null) {
-          ActivityDao.createNewPost(content, User.getCurrentUser(), mDataRest, mDataRest.getName(),
-              mDataRest.getObjectId(), cash, rate);
+          ActivityDao.createNewPost(content, User.getCurrentUser(), mDataRest, cash, rate);
           send = true;
           Log.v(TAG, "Send = " + send);
         } else {
@@ -140,7 +137,7 @@ public class PostReviewFragment extends FragmentActivity implements FragmentChan
           Log.v(TAG, "Rest = " + mDataRest.getName());
           Log.v(TAG, "Cash = " + cash);
           Log.v(TAG, "Rate = " + rate);
-          Log.v(TAG, "Name" + mDataRest.getName());
+          Log.v(TAG, "Name = " + mDataRest.getName());
           Log.v(TAG, "RestId = " + mDataRest.getObjectId());
 
         }
@@ -155,7 +152,9 @@ public class PostReviewFragment extends FragmentActivity implements FragmentChan
     protected void onPostExecute(Restaurant result) {
       super.onPostExecute(result);
       Log.v(TAG, "Finished task!");
-      finish();
+      Intent intent = new Intent(getBaseContext(), RestaurantActivity.class);
+      intent.putExtra("restId", mStringRestId);
+      startActivity(intent);
     }
   }
 

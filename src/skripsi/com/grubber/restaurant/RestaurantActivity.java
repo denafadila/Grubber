@@ -179,7 +179,7 @@ public class RestaurantActivity extends BaseActivity {
 
       try {
         Log.v(TAG, "Getting review list for current rest = success");
-        reviewResult = ActivityDao.getRestReviews(restId);
+        reviewResult = ActivityDao.getRestReviews(activity);
 
       } catch (Exception e) {
         // TODO: handle exception
@@ -220,9 +220,7 @@ public class RestaurantActivity extends BaseActivity {
     case R.id.action_write:
       // Refresh coordinates
       Intent intent = new Intent(getBaseContext(), PostReviewFragment.class);
-      Bundle restBundle = new Bundle();
-      restBundle.putSerializable("objectRest", activity);
-      intent.putExtra("restId", restBundle);
+      intent.putExtra("restId", restId);
       startActivity(intent);
       return true;
     default:

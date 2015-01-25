@@ -31,7 +31,7 @@ public class Activity extends AuditableParseObject {
   public static final String REVIEW = "review";
   public static final String STAR = "stars";
   public static final String CASH = "cash";
-  public static final String REST = "restId";
+  public static final String REST = "restoId";
   public static final String RNAME = "restName";
 
   public static final String PARENT_ACT = "parentActivity";
@@ -106,7 +106,7 @@ public class Activity extends AuditableParseObject {
     put(CASH, cash);
   }
 
-  public void setRestId(String rest) {
+  public void setRestoId(Restaurant rest) {
     put(REST, rest);
   }
 
