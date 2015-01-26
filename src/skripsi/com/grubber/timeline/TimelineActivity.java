@@ -144,7 +144,7 @@ public class TimelineActivity extends BaseActivity {
         return findViewById(android.R.id.tabcontent);
       }
     });
-    spec.setIndicator(createTabView(R.drawable.userprofile, "Profile"));
+    spec.setIndicator(createTabView(R.drawable.profile, "Profile"));
     tabhost.addTab(spec);
 
     tabs = (TabWidget) findViewById(android.R.id.tabs);

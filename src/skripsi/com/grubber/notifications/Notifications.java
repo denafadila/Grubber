@@ -25,6 +25,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.parse.ParseException;
+import com.parse.ParseUser;
 
 public class Notifications extends Fragment {
 
@@ -96,25 +97,29 @@ public class Notifications extends Fragment {
             // TODO Auto-generated method stub
             Intent intent = null;
             if (mResult.get(position).getType().equals("C")) {
+              Log.v(TAG, "Loading Comment from Notif");
               intent = new Intent(getActivity(), skripsi.com.grubber.timeline.Comment.class);
               intent.putExtra("reviewId", mResult.get(position).getReviewId());
-
               if (mResult.get(position).getTargetUserProfile().getObjectId()
                   .equals(User.getCurrentUser().getObjectId())) {
                 intent.putExtra("commentStatus", "Read");
-                Log.d("commentStatus", "Read");
+                Log.v("commentStatus", "Read");
               } else {
                 intent.putExtra("commentStatus", "Unread");
-                Log.d("commentStatus", "Unread");
+                Log.v("commentStatus", "Unread");
               }
-
               getActivity().startActivity(intent);
             } else {
+
+              Log.v(TAG, "Loading Profile from Notif");
               Bundle bundle = new Bundle();
               bundle.putString("commentStatus", "Read");
               Log.d("commentStatus", "Read");
+              ParseUser from = mResult.get(position).getCreatedBy();
+              ParseUser to = mResult.get(position).getTargetParseUserProfile();
               bundle.putString("objectId", mResult.get(position).getCreatedBy().getObjectId());
               bundle.putString("userName", mResult.get(position).getCreatedBy().getUsername());
+              ActivityDao.updateCommentStatus(null, "S", to, from);
               Fragment fragment = new ProfileFragment();
               fragment.setArguments(bundle);
               FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -135,4 +140,5 @@ public class Notifications extends Fragment {
       }
     }
   }
+
 }

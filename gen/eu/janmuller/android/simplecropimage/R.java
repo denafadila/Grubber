@@ -8,14 +8,14 @@ package eu.janmuller.android.simplecropimage;
 
 public final class R {
 	public static final class drawable {
-		public static final int btn_crop_operator = 0x7f02005c;
-		public static final int btn_crop_pressed = 0x7f02005d;
-		public static final int camera_crop_height = 0x7f020067;
-		public static final int camera_crop_width = 0x7f020068;
-		public static final int ic_rotate_left = 0x7f0200c8;
-		public static final int ic_rotate_right = 0x7f0200c9;
-		public static final int indicator_autocrop = 0x7f0200cc;
-		public static final int selector_crop_button = 0x7f0200f4;
+		public static final int btn_crop_operator = 0x7f02005d;
+		public static final int btn_crop_pressed = 0x7f02005e;
+		public static final int camera_crop_height = 0x7f020068;
+		public static final int camera_crop_width = 0x7f020069;
+		public static final int ic_rotate_left = 0x7f0200ca;
+		public static final int ic_rotate_right = 0x7f0200cb;
+		public static final int indicator_autocrop = 0x7f0200ce;
+		public static final int selector_crop_button = 0x7f0200f8;
 	}
 	public static final class id {
 		public static final int discard = 0x7f0800be;

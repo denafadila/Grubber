@@ -34,6 +34,7 @@ public class SearchListAdapter extends BaseAdapter {
   ImageLoader imageLoader;
 
   boolean isSearch = false;
+  // boolean isLoadStalk = false;
 
   public ImageView ivProf;
   private ToggleButton btnFollowUser;
@@ -52,6 +53,7 @@ public class SearchListAdapter extends BaseAdapter {
     this.listParseUser = listParseUser;
     this.listAct = listAct;
     this.isSearch = isSearch;
+    // this.isLoadStalk = isLoadStalk;
     imageLoader = new ImageLoader(context);
   }
 
@@ -97,11 +99,19 @@ public class SearchListAdapter extends BaseAdapter {
 
     if (listUser == null) {
       if (listAct != null || isSearch == false) {
-        ParseFile pp = (ParseFile) listParseUser.get(position).getParseFile("profilePic");
-        final String imageUrl = pp.getUrl();
-        imageLoader.DisplayImage(imageUrl, ivProf);
-        tvUserName.setText(listParseUser.get(position).getUsername());
-        tvAbout.setText(listParseUser.get(position).getString("aboutMe"));
+        Log.v(TAG, "listParseUser is used");
+        ParseFile pp;
+        try {
+          pp = (ParseFile) listParseUser.get(position).fetchIfNeeded().getParseFile("profilePic");
+          final String imageUrl = pp.getUrl();
+          imageLoader.DisplayImage(imageUrl, ivProf);
+          tvUserName.setText(listParseUser.get(position).fetchIfNeeded().getUsername());
+          tvAbout.setText(listParseUser.get(position).fetchIfNeeded().getString("aboutMe"));
+          btnFollowUser.setVisibility(View.GONE);
+        } catch (ParseException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       } else {
         tvUserName.setText("No user found");
       }
@@ -114,9 +124,14 @@ public class SearchListAdapter extends BaseAdapter {
           }).setIcon(android.R.drawable.ic_dialog_alert).show();
 
     } else {
+      Log.v(TAG, "ListUser is used!");
+      try {
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
       ParseFile pp = (ParseFile) listUser.get(position).getPhoto();
       final String imageUrl = pp.getUrl();
-
       imageLoader.DisplayImage(imageUrl, ivProf);
       tvUserName.setText(listUser.get(position).getUserName());
 
@@ -177,6 +192,8 @@ public class SearchListAdapter extends BaseAdapter {
           Toast.makeText(context, "Followed", Toast.LENGTH_LONG).show();
         }
       });
+    } else if (btnFollowUser == null) {
+      btnFollowUser.setVisibility(View.GONE);
     }
     return v;
   }

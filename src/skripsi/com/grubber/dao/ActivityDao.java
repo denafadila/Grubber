@@ -134,14 +134,16 @@ public class ActivityDao {
     // include only supported types
     pq1.setLimit(10);
     pq1.orderByDescending(AuditableParseObject.CREATED_AT);
-    pq1.include(AuditableParseObject.CREATED_BY);
+    pq1.include(Activity.CREATED_BY);
+    pq1.include(User.PARSE_USER);
 
     List<Activity> result = null;
     try {
       result = pq1.find();
-      Log.d(TAG, String.format("getUserData found %s records", result == null ? 0 : result.size()));
+      Log.d(TAG,
+          String.format("getStalkUserData found %s records", result == null ? 0 : result.size()));
     } catch (ParseException e) {
-      Log.w(TAG, "Problem in retrieving User Data", e);
+      Log.w(TAG, "Problem in retrieving StalkUser Data", e);
       throw e;
     }
     return result;
@@ -155,7 +157,7 @@ public class ActivityDao {
     // include only supported types
     pq1.setLimit(10);
     pq1.orderByDescending(AuditableParseObject.CREATED_AT);
-    pq1.include(AuditableParseObject.CREATED_BY);
+    pq1.include(Activity.CREATED_BY);
 
     List<Activity> result = null;
     try {
@@ -401,14 +403,23 @@ public class ActivityDao {
     return result;
   }
 
-  public static Activity updateCommentStatus(String reviewId) {
+  public static Activity updateCommentStatus(String reviewId, String type, ParseUser to,
+      ParseUser from) {
 
-    Log.d("updateCommentStatus", "Masuk");
+    Log.v(TAG, "Masuk");
     ParseQuery<Activity> query = new ParseQuery<Activity>("Activity");
-    query.whereEqualTo("type", "C");
-    query.whereEqualTo("status", "Unread");
-    query.whereEqualTo("reviewId", reviewId);
-
+    if (type.equals("C")) {
+      Log.v(TAG, "Comment is read!");
+      query.whereEqualTo("type", "C");
+      query.whereEqualTo("status", "Unread");
+      query.whereEqualTo("reviewId", reviewId);
+    } else if (type.equals("S")) {
+      Log.v(TAG, "Stalk update is read!");
+      query.whereEqualTo("type", "S");
+      query.whereEqualTo("status", "Unread");
+      query.whereEqualTo("targetUserProfile", to);
+      query.whereEqualTo("createdBy", from);
+    }
     query.findInBackground(new FindCallback<Activity>() {
 
       @Override

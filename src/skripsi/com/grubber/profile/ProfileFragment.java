@@ -1,99 +1,3 @@
-/*package skripsi.com.grubber.profile;
-
-import skripsi.com.grubber.MainActivity;
-import skripsi.com.grubber.R;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.ToggleButton;
-
-import com.parse.ParseUser;
-
-public class ProfileFragment extends Fragment {
-  private final static String TAG = ProfileFragment.class.getSimpleName();
-  public static final String USER_ID = "userId";
-  public static final String USER_USERNAME = "username";
-
-  // Declare
-  private String mUserId = null;
-  private String userName = null;
-  private String fullName = null;
-  private TextView tvFullName = null;
-  private TextView tvUserName = null;
-  private TextView tvAboutMe = null;
-  private ParseUser user;
-  private ProgressBar mProgressBar;
-  private ImageButton mPhoto = null;
-  private String aboutMe = null;
-  private ToggleButton mFollow;
-  private Button mLogOut;
-
-  private ParseUser isMe;
-  private boolean isProfileLoaded = false;
-  private boolean isCountLoaded = false;
-
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    // TODO Auto-generated method stub
-    super.onCreate(savedInstanceState);
-
-    isMe = ParseUser.getCurrentUser();
-    user = ParseUser.getCurrentUser();
-    userName = user.getString("username").toString();
-    fullName = user.getString("fullName").toString();
-    aboutMe = user.getString("aboutMe").toString();
-  }
-
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    // TODO Auto-generated method stub
-
-    View v = inflater.inflate(R.layout.fragment_user_profile, null);
-
-    // initialize
-    tvFullName = (TextView) v.findViewById(R.id.tvFullName);
-    tvFullName.setText(fullName);
-    tvUserName = (TextView) v.findViewById(R.id.tvUserName);
-    tvUserName.setText(userName);
-    tvAboutMe = (TextView) v.findViewById(R.id.tvAboutMe);
-    tvAboutMe.setText(aboutMe);
-    //
-    // mProgressBar = (ProgressBar) v.findViewById(R.id.pbSpinner);
-    mPhoto = (ImageButton) v.findViewById(R.id.ibProfilePhoto);
-    mPhoto.setClickable(false);
-
-    mLogOut = (Button) v.findViewById(R.id.btnLogOut);
-    mLogOut.setOnClickListener(new View.OnClickListener() {
-
-      @Override
-      public void onClick(View v) {
-        // TODO Auto-generated method stub
-        Log.d("LogOut Button", "Clicked");
-        ParseUser.logOut();
-        Intent i = new Intent(getActivity().getBaseContext(), MainActivity.class);
-        startActivity(i);
-        getActivity().finish();
-
-      }
-    });
-    mFollow = (ToggleButton) v.findViewById(R.id.btnFollow);
-    Log.v(TAG, "isMe ->" + isMe);
-    if (isMe == user) {
-      mFollow.setVisibility(v.GONE);
-    }
-    return v;
-  }
-}
- */
-
 package skripsi.com.grubber.profile;
 
 import java.util.ArrayList;
@@ -191,7 +95,7 @@ public class ProfileFragment extends Fragment implements
 
   public ListView lvList;
   private List<Activity> mReviews = new ArrayList<Activity>();
-  private List<User> mStalk = new ArrayList<User>();
+  private List<ParseUser> mStalk = new ArrayList<ParseUser>();
   private List<ParseUser> mStalked = new ArrayList<ParseUser>();
   private List<User> searchResult = new ArrayList<User>();
   private PostListAdapter mAdapter;
@@ -607,20 +511,16 @@ public class ProfileFragment extends Fragment implements
     protected void onPostExecute(List<Activity> stalk) {
       Log.v(TAG, "+++ LoadUserStalk.onPostExecute() called! +++");
       if (isAdded()) {
-        if (skipCount == 0) {
+        Log.v(TAG, "stalk = " + stalk.size());
+        if (stalk != null) {
           for (int i = 0; i < stalk.size(); i++) {
-            mStalk.add(i, stalk.get(i).getTargetUserProfile());
+            mStalk.add(i, stalk.get(i).getTargetUserProfile().getParseUser());
           }
-        } else {
-          if (stalk != null) {
-            for (int i = 0; i < stalk.size(); i++) {
-              mStalk.add(i, stalk.get(i).getTargetUserProfile());
-            }
-          }
+
         }
         // initialize UPA
-
-        mAdapter2 = new SearchListAdapter(getActivity().getBaseContext(), null, mStalk, null, false);
+        Log.v(TAG, "mStalk = " + mStalk.size());
+        mAdapter2 = new SearchListAdapter(getActivity().getBaseContext(), null, null, mStalk, false);
         lvList.setAdapter(mAdapter2);
       }
     }
@@ -640,7 +540,7 @@ public class ProfileFragment extends Fragment implements
 
     @Override
     protected void onPreExecute() {
-      Log.v(TAG, "+++ LoadUserStalk.onPreExecute() called! +++");
+      Log.v(TAG, "+++ LoadUserStalked.onPreExecute() called! +++");
       super.onPreExecute();
 
     }
@@ -669,17 +569,10 @@ public class ProfileFragment extends Fragment implements
     protected void onPostExecute(List<Activity> stalked) {
       Log.v(TAG, "+++ LoadUserStalked.onPostExecute() called! +++");
       if (isAdded()) {
-        if (skipCount == 0) {
-          for (int i = 0; i < stalked.size(); i++) {
-            mStalked.add(i, stalked.get(i).getCreatedBy());
-          }
-        } else {
-          if (stalked != null) {
-            for (int i = 0; i < stalked.size(); i++) {
-              mStalked.add(i, stalked.get(i).getCreatedBy());
-            }
-          }
+        for (int i = 0; i < stalked.size(); i++) {
+          mStalked.add(i, stalked.get(i).getCreatedBy());
         }
+
         // initialize UPA
         mAdapter2 = new SearchListAdapter(getActivity().getBaseContext(), null, null, mStalked,
             false);

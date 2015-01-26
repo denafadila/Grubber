@@ -560,7 +560,8 @@ public class RegisterFragment extends Fragment {
       super.onPostExecute(result);
       Utility.unlockScreenOrientation(getActivity());
       mProgressDialog.dismiss();
-      mListener.onSuccessfulRegistration();
+      Intent intent = new Intent(getActivity(), TimelineActivity.class);
+      startActivity(intent);
     }
   }
 
@@ -623,10 +624,12 @@ public class RegisterFragment extends Fragment {
 
   public void updateView() {
     if (isEdit) {
-
+      // edit profile mode
       mPhoto.setImageBitmap(bitmap);
       mEmail.setText(User.getCurrentUser().getEmail());
+      mEmail.setEnabled(false);
       mUsername.setText(User.getCurrentUser().getUserName());
+      mUsername.setEnabled(false);
       mFullName.setText(User.getCurrentUser().getFullName());
       mAboutMe.setText(User.getCurrentUser().getAboutMe());
     }
@@ -640,12 +643,12 @@ public class RegisterFragment extends Fragment {
       mAboutMe.setEnabled(false);
 
     } else {
-      // normal editable mode
+      // normal regis mode
       mPhoto.setEnabled(true);
       mFullName.setEnabled(true);
       mAboutMe.setEnabled(true);
       mEmail.setEnabled(true);
-      mUsername.setEnabled(false);
+      mUsername.setEnabled(true);
 
     }
   }
