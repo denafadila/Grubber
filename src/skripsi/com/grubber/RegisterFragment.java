@@ -382,9 +382,12 @@ public class RegisterFragment extends Fragment {
     // TODO Auto-generated method stub
     mIsSubmitting = true;
     getActivity().supportInvalidateOptionsMenu();
+    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+    byte[] image = stream.toByteArray();
     updateProfile(Utility.getTrimmedText(mFullName.getText()),
         Utility.getTrimmedText(mPassword.getText()), Utility.getTrimmedText(mAboutMe.getText()),
-        Utility.getTrimmedText(mEmail.getText()), photoBitmap);
+        Utility.getTrimmedText(mEmail.getText()), image);
   }
 
   protected void showToS() {
@@ -625,6 +628,7 @@ public class RegisterFragment extends Fragment {
   public void updateView() {
     if (isEdit) {
       // edit profile mode
+      Log.v(TAG, "updateView for edit mode");
       mPhoto.setImageBitmap(bitmap);
       mEmail.setText(User.getCurrentUser().getEmail());
       mEmail.setEnabled(false);
@@ -644,6 +648,7 @@ public class RegisterFragment extends Fragment {
 
     } else {
       // normal regis mode
+      Log.v(TAG, "updateView for regis mode");
       mPhoto.setEnabled(true);
       mFullName.setEnabled(true);
       mAboutMe.setEnabled(true);

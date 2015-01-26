@@ -43,7 +43,6 @@ public class TimelineActivity extends BaseActivity {
   ARActivity ar_tab;
   Notifications notif;
   ProfileFragment profile;
-  ProfileFragment prof;
   List<Activity> mResult;
 
   TabWidget tabs;
@@ -57,6 +56,7 @@ public class TimelineActivity extends BaseActivity {
 
     /* Action Bar */
     setTitle("GRUBBER");
+    setHomeAsUp(false);
     show();
 
     /* Tab */
@@ -229,7 +229,14 @@ public class TimelineActivity extends BaseActivity {
     int id = item.getItemId();
 
     if (id == R.id.action_settings) {
-      return false;
+      profile.editProfileAction();
+      // return false;
+    } else if (id == R.id.action_help) {
+      profile.helpAction();
+      // return false;
+    } else if (id == R.id.action_logout) {
+      profile.logoutAction();
+      // return false;
     }
 
     return super.onOptionsItemSelected(item);

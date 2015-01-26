@@ -11,8 +11,9 @@
         android:layout_width="wrap_content" 
         android:layout_height="wrap_content">#EDEDED</color>
     <color android:id="@+id/green_tosca" name="green_tosca">#2ED1A2</color>
-    <color android:id="@+id/main_tab_black" name="main_tab_black">#2A2B2D</color>
+    <color android:id="@+id/main_tab_black" name="main_tab_black">#242525</color>
     <color android:id="@+id/main_tab_green" name="main_tab_green">#3FA999</color>
+    <color android:id="@+id/main_tab_lightblack" name="main_tab_lightblack">#2A2B2D</color>
     <color android:id="@+id/splash_bg" name="splash_bg">#14B694</color>
     <color android:id="@+id/progressbar_1" name="progressbar_1">#2bbfcc</color>
     <color android:id="@+id/progressbar_2" name="progressbar_2">#e0d900</color>

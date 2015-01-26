@@ -29,6 +29,7 @@ public class MainActivity extends GrubberActivity implements
 
   private static final int FRAGMENT_LOGIN = 1;
   private static final int FRAGMENT_REGISTER = 2;
+  private boolean regis = true;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -164,7 +165,12 @@ public class MainActivity extends GrubberActivity implements
   public void onBackPressed() {
     Log.v(TAG, "onBackPressed");
     super.onBackPressed();
-    this.getSupportActionBar().hide();
+    if (!regis) {
+      Intent intent = new Intent(getBaseContext(), TimelineActivity.class);
+      startActivity(intent);
+    } else {
+      finish();
+    }
   }
 
   @Override

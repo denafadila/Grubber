@@ -1,5 +1,6 @@
 package skripsi.com.grubber.profile;
 
+import skripsi.com.grubber.BaseActivity;
 import skripsi.com.grubber.R;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,7 +23,8 @@ public class HelpFragment extends Fragment {
     // TODO Auto-generated method stub
     super.onCreate(savedInstanceState);
     setRetainInstance(true);
-    getActivity().getActionBar().setTitle("Help");
+    setHasOptionsMenu(true);
+    ((BaseActivity) getActivity()).setTitle("Profile");
   }
 
   @Override
