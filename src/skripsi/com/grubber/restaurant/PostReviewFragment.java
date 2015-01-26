@@ -6,12 +6,10 @@ import skripsi.com.grubber.dao.ActivityDao;
 import skripsi.com.grubber.dao.RestaurantDao;
 import skripsi.com.grubber.model.Restaurant;
 import skripsi.com.grubber.model.User;
-import skripsi.com.grubber.restaurant.RestaurantProfileActivity.FragmentChangeListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,8 +22,8 @@ import android.widget.RatingBar;
 
 import com.parse.ParseException;
 
-public class PostReviewFragment extends FragmentActivity implements FragmentChangeListener {
-  private final static String TAG = RestaurantProfileFragment.class.getSimpleName();
+public class PostReviewFragment extends FragmentActivity {
+  private final static String TAG = PostReviewFragment.class.getSimpleName();
 
   private ImageButton mPhoto = null;
   private byte[] photoBitmap = null;
@@ -156,12 +154,6 @@ public class PostReviewFragment extends FragmentActivity implements FragmentChan
       intent.putExtra("restId", mStringRestId);
       startActivity(intent);
     }
-  }
-
-  @Override
-  public void replaceFragment(Fragment fragment) {
-    // TODO Auto-generated method stub
-
   }
 
 }
