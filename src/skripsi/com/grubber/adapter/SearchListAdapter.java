@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -31,6 +32,7 @@ public class SearchListAdapter extends BaseAdapter {
   public static final String USER_OBJECT_ID = "objectId";
   public static final String USER_USERNAME = "username";
   public TextView tvUserName, tvAbout;
+  public LinearLayout llListBox;
   ImageLoader imageLoader;
 
   boolean isSearch = false;
@@ -92,6 +94,7 @@ public class SearchListAdapter extends BaseAdapter {
     tvUserName = (TextView) v.findViewById(R.id.username);
     tvAbout = (TextView) v.findViewById(R.id.aboutme);
     btnFollowUser = (ToggleButton) v.findViewById(R.id.btnfollow);
+    llListBox = (LinearLayout) v.findViewById(R.id.LLcontent);
 
     // if listAct != null && listUser == null && search == true = search for self
     // if listAct != null || search == false = open userProfile from notif, stalk/leave tab
@@ -106,6 +109,7 @@ public class SearchListAdapter extends BaseAdapter {
           final String imageUrl = pp.getUrl();
           imageLoader.DisplayImage(imageUrl, ivProf);
           tvUserName.setText(listParseUser.get(position).fetchIfNeeded().getUsername());
+
           tvAbout.setText(listParseUser.get(position).fetchIfNeeded().getString("aboutMe"));
           btnFollowUser.setVisibility(View.GONE);
         } catch (ParseException e) {

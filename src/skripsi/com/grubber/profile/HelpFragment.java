@@ -2,6 +2,7 @@ package skripsi.com.grubber.profile;
 
 import skripsi.com.grubber.BaseActivity;
 import skripsi.com.grubber.R;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class HelpFragment extends Fragment {
   private final static String TAG = HelpFragment.class.getSimpleName();
@@ -16,7 +18,7 @@ public class HelpFragment extends Fragment {
   // Declare
   private TextView tvReview, tvSearchRest, tvComment, tvSearchUser, tvTrend, tvFB, tvAddRest;
   private TextView tvAnswerRev, tvAnswerSearchRest, tvAnswerComment, tvAnswerSearchUser,
-      tvAnswerTrend, tvAnswerFB, tvAnswerAddRest;
+      tvAnswerTrend, tvAnswerFB, tvAnswerAddRest, tvEmailMe;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class HelpFragment extends Fragment {
     tvAnswerTrend = (TextView) v.findViewById(R.id.answerTrending);
     tvAnswerFB = (TextView) v.findViewById(R.id.answerShare);
     tvAnswerAddRest = (TextView) v.findViewById(R.id.answerAddRest);
+    tvEmailMe = (TextView) v.findViewById(R.id.emailRest);
 
     tvAnswerRev.setVisibility(View.GONE);
     tvAnswerSearchRest.setVisibility(View.GONE);
@@ -49,6 +52,7 @@ public class HelpFragment extends Fragment {
     tvAnswerTrend.setVisibility(View.GONE);
     tvAnswerFB.setVisibility(View.GONE);
     tvAnswerAddRest.setVisibility(View.GONE);
+    tvEmailMe.setVisibility(View.GONE);
 
     // initialize questions
     tvReview = (TextView) v.findViewById(R.id.howReview);
@@ -64,6 +68,7 @@ public class HelpFragment extends Fragment {
         tvAnswerTrend.setVisibility(View.GONE);
         tvAnswerFB.setVisibility(View.GONE);
         tvAnswerAddRest.setVisibility(View.GONE);
+        tvEmailMe.setVisibility(View.GONE);
       }
     });
     tvSearchRest = (TextView) v.findViewById(R.id.searchRest);
@@ -79,6 +84,7 @@ public class HelpFragment extends Fragment {
         tvAnswerTrend.setVisibility(View.GONE);
         tvAnswerFB.setVisibility(View.GONE);
         tvAnswerAddRest.setVisibility(View.GONE);
+        tvEmailMe.setVisibility(View.GONE);
 
       }
     });
@@ -95,6 +101,7 @@ public class HelpFragment extends Fragment {
         tvAnswerTrend.setVisibility(View.GONE);
         tvAnswerFB.setVisibility(View.GONE);
         tvAnswerAddRest.setVisibility(View.GONE);
+        tvEmailMe.setVisibility(View.GONE);
 
       }
     });
@@ -112,6 +119,7 @@ public class HelpFragment extends Fragment {
         tvAnswerTrend.setVisibility(View.GONE);
         tvAnswerFB.setVisibility(View.GONE);
         tvAnswerAddRest.setVisibility(View.GONE);
+        tvEmailMe.setVisibility(View.GONE);
 
       }
     });
@@ -128,6 +136,7 @@ public class HelpFragment extends Fragment {
         tvAnswerTrend.setVisibility(View.VISIBLE);
         tvAnswerFB.setVisibility(View.GONE);
         tvAnswerAddRest.setVisibility(View.GONE);
+        tvEmailMe.setVisibility(View.GONE);
 
       }
     });
@@ -144,6 +153,7 @@ public class HelpFragment extends Fragment {
         tvAnswerTrend.setVisibility(View.GONE);
         tvAnswerFB.setVisibility(View.VISIBLE);
         tvAnswerAddRest.setVisibility(View.GONE);
+        tvEmailMe.setVisibility(View.GONE);
 
       }
     });
@@ -160,11 +170,28 @@ public class HelpFragment extends Fragment {
         tvAnswerTrend.setVisibility(View.GONE);
         tvAnswerFB.setVisibility(View.GONE);
         tvAnswerAddRest.setVisibility(View.VISIBLE);
+        tvEmailMe.setVisibility(View.VISIBLE);
+        tvEmailMe.setOnClickListener(new OnClickListener() {
 
+          @Override
+          public void onClick(View v) {
+            // TODO Auto-generated method stub
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.setType("message/rfc822");
+            i.putExtra(Intent.EXTRA_EMAIL, new String[] { "sosmed.ar@gmail.com" });
+            i.putExtra(Intent.EXTRA_SUBJECT, "New Restaurant Request");
+            i.putExtra(Intent.EXTRA_TEXT, "Restaurant's Name, Address, City, Description");
+            try {
+              startActivity(Intent.createChooser(i, "Send mail..."));
+            } catch (android.content.ActivityNotFoundException ex) {
+              Toast.makeText(getActivity(), "There are no email clients installed.",
+                  Toast.LENGTH_SHORT).show();
+            }
+          }
+        });
       }
     });
 
     return v;
   }
-
 }

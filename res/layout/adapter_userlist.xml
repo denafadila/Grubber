@@ -14,6 +14,7 @@
         android:background="#c2c2c2" />
 
     <RelativeLayout
+        android:id="@+id/userListBox"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:background="@drawable/list_notif"
@@ -34,24 +35,29 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="13dp" />
 
-        <TextView
-            android:id="@+id/username"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/LLcontent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/profilePic"
-            android:textColor="#2e2a2a"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/aboutme"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/username"
-            android:layout_marginTop="5dp"
-            android:layout_toRightOf="@+id/profilePic"
-            android:textColor="#808080"
-            android:textSize="14sp" />
+            <TextView
+                android:id="@+id/username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#2e2a2a"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/aboutme"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:textColor="#808080"
+                android:textSize="14sp" />
+        </LinearLayout>
 
         <ToggleButton
             android:id="@+id/btnfollow"

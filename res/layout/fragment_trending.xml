@@ -78,37 +78,38 @@
         android:orientation="horizontal"
         android:weightSum="3" >
 
-        <TextView
-            android:id="@+id/tvRate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/main_tab_green"
-            android:text="Rate"
-            android:textColor="#FFFFFF"
-            android:textSize="17sp" />
-
-        <TextView
-            android:id="@+id/tvCash"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="1dp"
-            android:layout_marginRight="1dp"
-            android:layout_weight="1"
-            android:background="@color/main_tab_green"
-            android:text="Cash"
-            android:textColor="#FFFFFF"
-            android:textSize="17sp" />
-
-        <TextView
+        <Button
             android:id="@+id/tvPop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/main_tab_green"
+            android:background="@color/main_tab_black"
+            android:gravity="center"
             android:text="Popular"
             android:textColor="#FFFFFF"
-            android:textSize="17sp" />
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/tvRate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/main_tab_black"
+            android:gravity="center"
+            android:text="Rate"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/tvCash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/main_tab_black"
+            android:gravity="center"
+            android:text="Cash"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout

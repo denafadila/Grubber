@@ -9,7 +9,7 @@ import java.util.WeakHashMap;
 import skripsi.com.android.Utility;
 import skripsi.com.grubber.model.Activity;
 import skripsi.com.grubber.model.Restaurant;
-import skripsi.com.grubber.tutorial.Tutorial;
+import skripsi.com.grubber.profile.HelpFragment;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -52,7 +52,7 @@ public class GrubberApplication extends Application {
     mTask = new AssetsExtracter();
     mTask.execute(0);
 
-    PushService.setDefaultPushCallback(this, GrubberActivity.class);
+    PushService.setDefaultPushCallback(this, MainActivity.class);
     ParseInstallation.getCurrentInstallation().saveInBackground();
 
   }
@@ -75,7 +75,7 @@ public class GrubberApplication extends Application {
   }
 
   public static void showTutorial(Context context) {
-    Intent i = new Intent(context, Tutorial.class);
+    Intent i = new Intent(context, HelpFragment.class);
     i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
     context.startActivity(i);
   }

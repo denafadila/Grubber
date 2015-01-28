@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -22,7 +23,7 @@ import android.view.MenuItem;
 import com.parse.ParseAnalytics;
 import com.parse.ParseUser;
 
-public class MainActivity extends GrubberActivity implements
+public class MainActivity extends ActionBarActivity implements
     LoginFragment.OnFragmentInteractionListener, RegisterFragment.OnFragmentInteractionListener {
 
   private static final String TAG = MainActivity.class.getSimpleName();
@@ -83,12 +84,6 @@ public class MainActivity extends GrubberActivity implements
       return false;
     }
     return super.onOptionsItemSelected(item);
-  }
-
-  @Override
-  protected int getContentViewId() {
-    // TODO Auto-generated method stub
-    return R.layout.activity_main;
   }
 
   private void showFragment(int fragmentIndex, boolean addToBackStack) {

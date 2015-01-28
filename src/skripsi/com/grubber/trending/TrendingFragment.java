@@ -11,7 +11,6 @@ import skripsi.com.grubber.dao.RestaurantDao;
 import skripsi.com.grubber.image.ImageLoader;
 import skripsi.com.grubber.model.Restaurant;
 import android.app.AlertDialog;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -31,7 +31,7 @@ import com.parse.ParseFile;
 public class TrendingFragment extends Fragment {
   public static final String TAG = TrendingFragment.class.getSimpleName();
 
-  public TextView tvRate, tvCash, tvPop;
+  public Button tvRate, tvCash, tvPop;
   public TextView tvName, tvAddress, tvCity, tvDesc;
   public ListView lvList;
   private List<Restaurant> mRandRest = new ArrayList<Restaurant>();
@@ -65,44 +65,44 @@ public class TrendingFragment extends Fragment {
     profilePic = (ImageView) view.findViewById(R.id.ibProfilePhoto);
 
     lvList = (ListView) view.findViewById(R.id.lvTrending);
-    tvRate = (TextView) view.findViewById(R.id.tvRate);
+    tvRate = (Button) view.findViewById(R.id.tvRate);
     tvRate.setOnClickListener(new OnClickListener() {
 
       @Override
       public void onClick(View v) {
         // TODO Auto-generated method stub
         buttonPressed = "rate";
-        tvRate.setTypeface(null, Typeface.BOLD);
-        tvCash.setTypeface(null, Typeface.NORMAL);
-        tvPop.setTypeface(null, Typeface.NORMAL);
+        tvPop.setBackgroundResource(R.color.main_tab_black);
+        tvCash.setBackgroundResource(R.color.main_tab_black);
+        tvRate.setBackgroundResource(R.color.main_tab_lightblack);
         trendTask = new TrendingTask();
         trendTask.execute();
       }
     });
-    tvCash = (TextView) view.findViewById(R.id.tvCash);
+    tvCash = (Button) view.findViewById(R.id.tvCash);
     tvCash.setOnClickListener(new OnClickListener() {
 
       @Override
       public void onClick(View v) {
         // TODO Auto-generated method stub
         buttonPressed = "cash";
-        tvRate.setTypeface(null, Typeface.NORMAL);
-        tvCash.setTypeface(null, Typeface.BOLD);
-        tvPop.setTypeface(null, Typeface.NORMAL);
+        tvPop.setBackgroundResource(R.color.main_tab_black);
+        tvRate.setBackgroundResource(R.color.main_tab_black);
+        tvCash.setBackgroundResource(R.color.main_tab_lightblack);
         trendTask = new TrendingTask();
         trendTask.execute();
       }
     });
-    tvPop = (TextView) view.findViewById(R.id.tvPop);
+    tvPop = (Button) view.findViewById(R.id.tvPop);
     tvPop.setOnClickListener(new OnClickListener() {
 
       @Override
       public void onClick(View v) {
         // TODO Auto-generated method stub
         buttonPressed = "pop";
-        tvRate.setTypeface(null, Typeface.NORMAL);
-        tvCash.setTypeface(null, Typeface.NORMAL);
-        tvPop.setTypeface(null, Typeface.BOLD);
+        tvCash.setBackgroundResource(R.color.main_tab_black);
+        tvRate.setBackgroundResource(R.color.main_tab_black);
+        tvPop.setBackgroundResource(R.color.main_tab_lightblack);
         trendTask = new TrendingTask();
         trendTask.execute();
       }
