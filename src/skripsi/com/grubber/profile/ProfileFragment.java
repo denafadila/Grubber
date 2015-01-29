@@ -59,13 +59,11 @@ public class ProfileFragment extends Fragment implements
   private LinearLayout llsearchClick = null;
   private LinearLayout llSearchField = null;
 
-  private ImageView btnHelp = null;
-  private ImageView btnLogout = null;
-  private ImageView btnUpdate = null;
-
   private Button btnStalk = null;
   private Button btnStalked = null;
   private Button btnReview = null;
+
+  private String button = "";
 
   private int stalkCount = 0;
   private int revCount = 0;
@@ -97,7 +95,6 @@ public class ProfileFragment extends Fragment implements
   public ListView lvList;
   private List<Activity> mReviews = new ArrayList<Activity>();
   private List<ParseUser> mStalk = new ArrayList<ParseUser>();
-  private List<ParseUser> mStalked = new ArrayList<ParseUser>();
   private List<User> searchResult = new ArrayList<User>();
   private PostListAdapter mAdapter;
   private SearchListAdapter mAdapter2;
@@ -146,17 +143,31 @@ public class ProfileFragment extends Fragment implements
       @Override
       public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // TODO Auto-generated method stub
-        Log.v(TAG, "Profile selected ->" + searchResult.get(position).getUserName());
-        Bundle bundle = new Bundle();
-        bundle.putString("objectId", searchResult.get(position).getObjectId());
-        bundle.putString("userName", searchResult.get(position).getParseUser().getUsername());
-        Fragment fragment = new ProfileFragment();
-        fragment.setArguments(bundle);
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(android.R.id.tabcontent, fragment);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        if (button.equals("search")) {
+          Log.v(TAG, "Profile selected ->" + searchResult.get(position).getUserName());
+          Bundle bundle = new Bundle();
+          bundle.putString("objectId", searchResult.get(position).getObjectId());
+          bundle.putString("userName", searchResult.get(position).getParseUser().getUsername());
+          Fragment fragment = new ProfileFragment();
+          fragment.setArguments(bundle);
+          FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+          FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+          fragmentTransaction.replace(android.R.id.tabcontent, fragment);
+          fragmentTransaction.addToBackStack(null);
+          fragmentTransaction.commit();
+        } else {
+          Log.v(TAG, "Profile selected ->" + mStalk.get(position).getUsername());
+          Bundle bundle = new Bundle();
+          bundle.putString("objectId", mStalk.get(position).getObjectId());
+          bundle.putString("userName", mStalk.get(position).getUsername());
+          Fragment fragment = new ProfileFragment();
+          fragment.setArguments(bundle);
+          FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+          FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+          fragmentTransaction.replace(android.R.id.tabcontent, fragment);
+          fragmentTransaction.addToBackStack(null);
+          fragmentTransaction.commit();
+        }
       }
     });
     // // initialize
@@ -272,7 +283,7 @@ public class ProfileFragment extends Fragment implements
       @Override
       public void onClick(View v) {
         // TODO Auto-generated method stub
-        mStalked.clear();
+        mStalk.clear();
         btnReview.setBackgroundResource(R.color.main_tab_black);
         btnStalk.setBackgroundResource(R.color.main_tab_black);
         btnStalked.setBackgroundResource(R.color.main_tab_lightblack);
@@ -603,12 +614,11 @@ public class ProfileFragment extends Fragment implements
       Log.v(TAG, "+++ LoadUserStalked.onPostExecute() called! +++");
       if (isAdded()) {
         for (int i = 0; i < stalked.size(); i++) {
-          mStalked.add(i, stalked.get(i).getCreatedBy());
+          mStalk.add(i, stalked.get(i).getCreatedBy());
         }
 
         // initialize UPA
-        mAdapter2 = new SearchListAdapter(getActivity().getBaseContext(), null, null, mStalked,
-            false);
+        mAdapter2 = new SearchListAdapter(getActivity().getBaseContext(), null, null, mStalk, false);
         lvList.setAdapter(mAdapter2);
       }
     }
