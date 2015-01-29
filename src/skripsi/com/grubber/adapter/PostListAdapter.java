@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -82,16 +81,7 @@ public class PostListAdapter extends BaseAdapter {
     tvUser = (TextView) view.findViewById(R.id.username);
     tvRestName = (TextView) view.findViewById(R.id.restaurant);
     tvContent = (TextView) view.findViewById(R.id.review);
-    tvContent.setOnLongClickListener(new OnLongClickListener() {
 
-      @Override
-      public boolean onLongClick(View v) {
-        // TODO Auto-generated method stub
-        postContentToWall(mPost.get(position));
-        return false;
-
-      }
-    });
     tvRate = (TextView) view.findViewById(R.id.rating);
     tvCash = (TextView) view.findViewById(R.id.price);
     rbRate = (RatingBar) view.findViewById(R.id.ratingBar);
@@ -136,6 +126,7 @@ public class PostListAdapter extends BaseAdapter {
         // TODO Auto-generated method stub
         // Send single item click data to SingleItemView Class
         Intent intent = new Intent(context, skripsi.com.grubber.timeline.Comment.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("reviewId", mPost.get(position).getObjectId());
 
         if (mPost.get(position).getCreatedBy().getObjectId()
@@ -158,12 +149,4 @@ public class PostListAdapter extends BaseAdapter {
     public void postContentToWall(Activity review);
   }
 
-  public void postContentToWall(Activity review) {
-  }
-  /*
-   * public void readNotif(String reviewId) {
-   * 
-   * for(int i=0;i<getCount();i++) { if(reviewId.equals(mPost.get(i).getObjectId())) { getView(i,
-   * null, null); } } }
-   */
 }

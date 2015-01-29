@@ -50,13 +50,12 @@
         </LinearLayout>
     </RelativeLayout>
 
-
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="3" >
-    
+
         <Button
             android:id="@+id/tvUserReview"
             android:layout_width="match_parent"
@@ -67,7 +66,7 @@
             android:text="@plurals/grubber_user_review"
             android:textColor="#FFFFFF"
             android:textSize="14sp" />
-        
+
         <Button
             android:id="@+id/tvUserStalk"
             android:layout_width="match_parent"
@@ -89,8 +88,19 @@
             android:text="@plurals/grubber_user_stalked"
             android:textColor="#FFFFFF"
             android:textSize="14sp" />
+    </LinearLayout>
 
-        
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_tab_black">
+
+        <EditText
+            android:id="@+id/etSearchField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Search for user..." />
     </LinearLayout>
 
     <LinearLayout

@@ -5,18 +5,21 @@
     android:descendantFocusability="beforeDescendants"
     android:paddingLeft="15dp"
     android:paddingRight="15dp"
-    android:paddingTop="7dp" >
+    android:paddingTop="7dp"
+    android:weightSum="2" >
 
     <View
         android:id="@+id/notif_line"
         android:layout_width="4dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:background="#c2c2c2" />
 
     <RelativeLayout
         android:id="@+id/userListBox"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:background="@drawable/list_notif"
         android:clickable="false"
         android:descendantFocusability="blocksDescendants"
@@ -55,6 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:ellipsize="end"
                 android:textColor="#808080"
                 android:textSize="14sp" />
         </LinearLayout>

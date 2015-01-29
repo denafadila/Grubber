@@ -24,6 +24,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -79,8 +80,6 @@ public class ProfileFragment extends Fragment implements
 
   private boolean isHidden = true;
   private EditText etSearch;
-  private TextView tvShowSearch;
-  private Button btnSearch;
 
   String get_requestedUpId;
   String get_username;
@@ -170,110 +169,25 @@ public class ProfileFragment extends Fragment implements
         }
       }
     });
-    // // initialize
-    // tvShowSearch = (TextView) v.findViewById(R.id.showSearch);
-    // tvShowSearch.setOnClickListener(new OnClickListener() {
-    //
-    // @Override
-    // public void onClick(View v) {
-    // // TODO Auto-generated method stub
-    // if (isHidden == true) {
-    // tvShowSearch.setTypeface(null, Typeface.NORMAL);
-    // isHidden = false;
-    // llSearchField.setVisibility(View.GONE);
-    // } else {
-    // tvShowSearch.setTypeface(null, Typeface.BOLD);
-    // isHidden = true;
-    // llSearchField.setVisibility(View.VISIBLE);
-    // }
-    // }
-    // });
-    //
-    // llsearchClick = (LinearLayout) v.findViewById(R.id.LLsearch);
-    // llsearchClick.setOnClickListener(new OnClickListener() {
-    //
-    // @Override
-    // public void onClick(View v) {
-    // // TODO Auto-generated method stub
-    // if (isHidden == true) {
-    // tvShowSearch.setTypeface(null, Typeface.NORMAL);
-    // isHidden = false;
-    // llSearchField.setVisibility(View.GONE);
-    // } else {
-    // tvShowSearch.setTypeface(null, Typeface.BOLD);
-    // isHidden = true;
-    // llSearchField.setVisibility(View.VISIBLE);
-    // }
-    // }
-    // });
-    // llSearchField = (LinearLayout) v.findViewById(R.id.searchField);
-    // llSearchField.setVisibility(View.GONE);
-    // etSearch = (EditText) v.findViewById(R.id.ETsearch);
-    // btnSearch = (Button) v.findViewById(R.id.btnSearch);
-    // btnSearch.setOnClickListener(new OnClickListener() {
-    //
-    // @Override
-    // public void onClick(View v) {
-    // // TODO Auto-generated method stub
-    // searchResult.clear();
-    // mReviews.clear();
-    // tvStalked.setTypeface(null, Typeface.NORMAL);
-    // tvStalk.setTypeface(null, Typeface.NORMAL);
-    // tvReview.setTypeface(null, Typeface.NORMAL);
-    // Toast.makeText(getActivity().getBaseContext(), etSearch.getText(), Toast.LENGTH_LONG)
-    // .show();
-    // mSearchTask = new searchTask();
-    // mSearchTask.execute();
-    // }
-    // });
-    //
-    // btnHelp = (ImageView) v.findViewById(R.id.Btnhelp);
-    // btnHelp.setOnClickListener(new OnClickListener() {
-    //
-    // @Override
-    // public void onClick(View v) {
-    // // TODO Auto-generated method stub
-    // Fragment fragment = new HelpFragment();
-    // FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-    // FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    // fragmentTransaction.replace(android.R.id.tabcontent, fragment);
-    // fragmentTransaction.addToBackStack(null);
-    // fragmentTransaction.commit();
-    // }
-    // });
-    // btnLogout = (ImageView) v.findViewById(R.id.BtnLogout);
-    // btnLogout.setOnClickListener(new OnClickListener() {
-    //
-    // @Override
-    // public void onClick(View v) {
-    // // TODO Auto-generated method stub
-    // Log.d("LogOut Button", "Clicked");
-    // ParseUser.logOut();
-    // Intent i = new Intent(getActivity().getBaseContext(), MainActivity.class);
-    // startActivity(i);
-    // getActivity().finish();
-    // Toast.makeText(getActivity().getBaseContext(), "Logged out", Toast.LENGTH_LONG).show();
-    // }
-    // });
-    // btnUpdate = (ImageView) v.findViewById(R.id.BtnUpdate);
-    // btnUpdate.setOnClickListener(new OnClickListener() {
-    //
-    // @Override
-    // public void onClick(View v) {
-    // // TODO Auto-generated method stub
-    // Log.d("Update Button", "Clicked");
-    // Bundle bundle = new Bundle();
-    // bundle.putBoolean("editMode", true);
-    // Fragment fragment = new RegisterFragment();
-    // fragment.setArguments(bundle);
-    // FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-    // FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-    // fragmentTransaction.replace(android.R.id.tabcontent, fragment);
-    // fragmentTransaction.addToBackStack(null);
-    // fragmentTransaction.commit();
-    // }
-    // });
 
+    etSearch = (EditText) v.findViewById(R.id.etSearchField);
+    etSearch.setOnKeyListener(new EditText.OnKeyListener() {
+      public boolean onKey(View v, int keyCode, KeyEvent event) {
+        // If the event is a key-down event on the "enter" button
+        if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+          // Perform action on key press
+          searchResult.clear();
+          mReviews.clear();
+          Toast.makeText(getActivity().getBaseContext(), etSearch.getText(), Toast.LENGTH_LONG)
+              .show();
+          button = "search";
+          mSearchTask = new searchTask();
+          mSearchTask.execute();
+          return true;
+        }
+        return false;
+      }
+    });
     tvFullName = (TextView) v.findViewById(R.id.tvFullName);
     tvAboutMe = (TextView) v.findViewById(R.id.tvAboutMe);
     btnStalked = (Button) v.findViewById(R.id.tvUserStalked);
@@ -284,6 +198,7 @@ public class ProfileFragment extends Fragment implements
       public void onClick(View v) {
         // TODO Auto-generated method stub
         mStalk.clear();
+        button = "stalked";
         btnReview.setBackgroundResource(R.color.main_tab_black);
         btnStalk.setBackgroundResource(R.color.main_tab_black);
         btnStalked.setBackgroundResource(R.color.main_tab_lightblack);
@@ -299,6 +214,7 @@ public class ProfileFragment extends Fragment implements
       public void onClick(View v) {
         // TODO Auto-generated method stub
         mStalk.clear();
+        button = "stalk";
         btnReview.setBackgroundResource(R.color.main_tab_black);
         btnStalk.setBackgroundResource(R.color.main_tab_lightblack);
         btnStalked.setBackgroundResource(R.color.main_tab_black);
@@ -506,7 +422,7 @@ public class ProfileFragment extends Fragment implements
           }
         }
         // initialize UPA
-        mAdapter = new PostListAdapter(getActivity().getBaseContext(), mReviews);
+        mAdapter = new PostListAdapter(getActivity(), mReviews);
         lvList.setAdapter(mAdapter);
       }
     }
