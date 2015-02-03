@@ -50,68 +50,144 @@
         </LinearLayout>
     </RelativeLayout>
 
+    <!-- <RelativeLayout
+        android:id="@+id/rlSetting"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_tab_black"
+        android:layout_below="@+id/llProfileName"
+        android:layout_gravity="right" >
+
+        <ImageView
+            android:id="@+id/Btnhelp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/help" />
+
+        <ImageView
+            android:id="@+id/BtnLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/Btnhelp"
+            android:src="@drawable/logout" />
+
+        <ImageView
+            android:id="@+id/BtnUpdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/BtnLogout"
+            android:src="@drawable/setting" />
+    </RelativeLayout> -->
+
+    <!--<LinearLayout
+        android:id="@+id/LLsearch"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/showSearch"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/main_tab_green"
+            android:gravity="center_horizontal"
+            android:text="Search"
+            android:textColor="#FFFFFF"
+            android:textSize="17sp" />-->
+
+         
+   <!--  </LinearLayout> -->
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="3" >
-
+    
         <Button
             android:id="@+id/tvUserReview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/main_tab_black"
+            android:background="@color/main_tab_lightblack"
             android:gravity="center"
             android:text="@plurals/grubber_user_review"
             android:textColor="#FFFFFF"
-            android:textSize="14sp" />
-
+            android:textSize="12sp" />
+        
         <Button
             android:id="@+id/tvUserStalk"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/main_tab_black"
+            android:background="@color/main_tab_lightblack"
             android:gravity="center"
             android:text="@plurals/grubber_user_stalk"
             android:textColor="#FFFFFF"
-            android:textSize="14sp" />
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/tvUserStalked"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/main_tab_black"
+            android:background="@color/main_tab_lightblack"
             android:gravity="center"
             android:text="@plurals/grubber_user_stalked"
             android:textColor="#FFFFFF"
-            android:textSize="14sp" />
-    </LinearLayout>
+            android:textSize="12sp" />
 
+        
+    </LinearLayout>
+    
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/main_tab_black">
-
-        <EditText
-            android:id="@+id/etSearchField"
-            android:layout_width="match_parent"
+            android:id="@+id/searchField"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Search for user..." />
-    </LinearLayout>
+            android:orientation="vertical"
+            android:background="#FFFFFF" >
+      
+            <EditText
+                android:id="@+id/ETsearch"
+                android:layout_width="match_parent"
+                android:layout_height="41dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_weight="1"
+                android:hint="Search user..."
+                android:cursorVisible="true"
+                android:inputType="text"
+                style="@style/GrubberEditText"
+                android:textSize="14sp"
+                android:background="@color/main_tab_black"
+                android:imeOptions="actionSearch"
+                android:textColor="#FFFFFF" />
+            
+      <View style="@style/GrubberDivider"/>
+      
+        </LinearLayout> 
+      
 
     <LinearLayout
         android:id="@+id/LLlist"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
+        android:divider="@color/main_tab_lightblack"
+        android:showDividers="beginning|middle"
+        android:orientation="vertical" >
+        
+        <!-- <TextView
+                android:id="@+id/tvSearch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:background="#FFFFFF"
+                android:textColor="#000000"/> -->
+        
         <ListView
             android:id="@+id/lvUserProfile"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="false"
             android:focusable="false"

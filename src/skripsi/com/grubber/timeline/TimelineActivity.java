@@ -272,7 +272,7 @@ public class TimelineActivity extends BaseActivity {
       if (count_notif != 0) {
         badge.setText(String.valueOf(count_notif));
         badge.setTextSize(11);
-        badge.setBadgeMargin(35, 0);
+        badge.setBadgeMargin(35, 20);
         badge.setBadgePosition(BadgeView.POSITION_TOP_RIGHT);
         badge.show();
       }

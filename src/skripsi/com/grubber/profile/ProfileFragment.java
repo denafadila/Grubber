@@ -15,6 +15,7 @@ import skripsi.com.grubber.image.ImageLoader;
 import skripsi.com.grubber.model.Activity;
 import skripsi.com.grubber.model.User;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -29,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -170,7 +172,7 @@ public class ProfileFragment extends Fragment implements
       }
     });
 
-    etSearch = (EditText) v.findViewById(R.id.etSearchField);
+    etSearch = (EditText) v.findViewById(R.id.ETsearch);
     etSearch.setOnKeyListener(new EditText.OnKeyListener() {
       public boolean onKey(View v, int keyCode, KeyEvent event) {
         // If the event is a key-down event on the "enter" button
@@ -180,6 +182,9 @@ public class ProfileFragment extends Fragment implements
           mReviews.clear();
           Toast.makeText(getActivity().getBaseContext(), etSearch.getText(), Toast.LENGTH_LONG)
               .show();
+          InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+              Context.INPUT_METHOD_SERVICE);
+          imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
           button = "search";
           mSearchTask = new searchTask();
           mSearchTask.execute();
@@ -188,6 +193,7 @@ public class ProfileFragment extends Fragment implements
         return false;
       }
     });
+
     tvFullName = (TextView) v.findViewById(R.id.tvFullName);
     tvAboutMe = (TextView) v.findViewById(R.id.tvAboutMe);
     btnStalked = (Button) v.findViewById(R.id.tvUserStalked);

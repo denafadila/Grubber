@@ -93,8 +93,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginTop="10sp"
-        android:background="@color/main_tab_green"
+        android:background="#546066"
         android:text="Cancel"
-        android:textColor="@android:color/white" />
+        android:textColor="#e6eaeb" />
 
 </LinearLayout>

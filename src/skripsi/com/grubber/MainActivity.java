@@ -137,17 +137,11 @@ public class MainActivity extends ActionBarActivity implements
     this.finish();
   }
 
-  private void showGettingStarted() {
-    Log.d(TAG, "Launch Tutorial");
-    this.finish();
-    GrubberApplication.showTutorial(this);
-  }
-
   @Override
   public void onSuccessfulRegistration() {
     // successful registration
     Log.d(TAG, "Returned to MainActivity after successful registration");
-    showGettingStarted();
+    gotoNextPage();
   }
 
   @Override
@@ -177,12 +171,6 @@ public class MainActivity extends ActionBarActivity implements
     editor.putBoolean("isLogged", true);
     editor.commit();
     gotoNextPage();
-  }
-
-  @Override
-  public void onResetPasswordAction() {
-    Log.v(TAG, "onResetPasswordAction");
-    // showFragment(FRAGMENT_RESET_PASSWORD, true);
   }
 
   @Override
@@ -217,5 +205,11 @@ public class MainActivity extends ActionBarActivity implements
     Log.d(TAG, "Returned to MainActivity after successful edit");
     Intent intent = new Intent(this, TimelineActivity.class);
     startActivity(intent);
+  }
+
+  @Override
+  public void onResetPasswordAction() {
+    // TODO Auto-generated method stub
+
   }
 }
