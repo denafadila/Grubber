@@ -23,6 +23,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.InputFilter;
 import android.text.InputFilter.LengthFilter;
 import android.util.Log;
@@ -222,7 +224,15 @@ public class RegisterFragment extends Fragment {
       @Override
       public void onClick(View v) {
         // TODO Auto-generated method stub
-        getActivity().onBackPressed();
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        Fragment f = null;
+        transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,
+            R.anim.slide_in_left, R.anim.slide_out_right);
+        f = Fragment.instantiate(getActivity(), LoginFragment.class.getName());
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.content_frame, f);
+        transaction.commit();
       }
     });
 
@@ -259,7 +269,16 @@ public class RegisterFragment extends Fragment {
         submitEdit();
       }
     } else if (itemId == R.id.miRegistrationCancel) {
-      getActivity().onBackPressed();
+
+      FragmentManager fm = getFragmentManager();
+      FragmentTransaction transaction = fm.beginTransaction();
+      Fragment f = null;
+      transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,
+          R.anim.slide_in_left, R.anim.slide_out_right);
+      f = Fragment.instantiate(getActivity(), LoginFragment.class.getName());
+      transaction.addToBackStack(null);
+      transaction.replace(R.id.content_frame, f);
+      transaction.commit();
     }
     return super.onOptionsItemSelected(item);
   }

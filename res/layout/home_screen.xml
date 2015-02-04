@@ -110,15 +110,7 @@
             
         </LinearLayout>
         
-        <TextView
-            android:id="@+id/btnResetPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/LLUserAction"
-            android:layout_marginTop="10dp"
-            android:textSize="13sp"
-            android:text="forgot your password?" />
+
     </RelativeLayout>
 
 </ScrollView>

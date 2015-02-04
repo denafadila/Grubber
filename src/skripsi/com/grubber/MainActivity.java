@@ -35,6 +35,7 @@ public class MainActivity extends ActionBarActivity implements
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
     ActionBar actionBar = getActionBar();
     actionBar.hide();
 

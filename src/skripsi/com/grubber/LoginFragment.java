@@ -70,12 +70,6 @@ public class LoginFragment extends DialogFragment {
       }
     });
 
-    view.findViewById(R.id.btnResetPassword).setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        goToResetPassword();
-      }
-    });
     return view;
   }
 
