@@ -166,6 +166,8 @@ public class TimelineListPostActivity extends Fragment {
       }
     });
     //
+    refresh.setColorScheme(R.color.progressbar_1, R.color.progressbar_2, R.color.progressbar_3,
+        R.color.progressbar_4);
     // refresh.setColorSchemeResources(R.color.progressbar_1, R.color.progressbar_2,
     // R.color.progressbar_3, R.color.progressbar_4);
 
