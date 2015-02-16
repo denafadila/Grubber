@@ -147,8 +147,8 @@ public class TimelineListPostActivity extends Fragment {
       public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int pos, long id) {
         // postContentToWall(m1Result.get(pos));
         // publishFeedDialog();
+        Log.v(TAG, "Content Clicked!");
         postContentToWall(m1Result.get(pos));
-
         return true;
       }
 

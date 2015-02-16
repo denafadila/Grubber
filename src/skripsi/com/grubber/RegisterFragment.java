@@ -409,16 +409,6 @@ public class RegisterFragment extends Fragment {
         Utility.getTrimmedText(mEmail.getText()), image);
   }
 
-  protected void showToS() {
-    TNCDialogFragment tdf = TNCDialogFragment.newInstance(TNCDialogFragment.TYPE_TERMS_OF_SERVICE);
-    tdf.show(getFragmentManager(), null);
-  }
-
-  protected void showPP() {
-    TNCDialogFragment tdf = TNCDialogFragment.newInstance(TNCDialogFragment.TYPE_PRIVACY_POLICY);
-    tdf.show(getFragmentManager(), null);
-  }
-
   protected boolean validateAboutMe() {
     boolean result = true;
     return result;

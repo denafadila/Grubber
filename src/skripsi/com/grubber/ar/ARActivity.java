@@ -60,12 +60,6 @@ public class ARActivity extends ARViewActivity implements LocationListener,
   private LocationClient mLocationClient;
   private MyAnnotatedGeometriesGroupCallback mAnnotatedGeometriesGroupCallback;
 
-  /**
-   * Geometries
-   */
-
-  private List<IGeometry> metaioManList = new ArrayList<IGeometry>();
-
   String trackingConfigFile;
 
   private List<IGeometry> mGeoObject = new ArrayList<IGeometry>();

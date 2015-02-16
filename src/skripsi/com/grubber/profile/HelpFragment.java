@@ -5,6 +5,7 @@ import skripsi.com.grubber.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,7 +27,8 @@ public class HelpFragment extends Fragment {
     super.onCreate(savedInstanceState);
     setRetainInstance(true);
     setHasOptionsMenu(true);
-    ((BaseActivity) getActivity()).setTitle("Profile");
+    ((BaseActivity) getActivity()).setTitle("Help");
+
   }
 
   @Override
@@ -194,4 +196,17 @@ public class HelpFragment extends Fragment {
 
     return v;
   }
+
+  // handle onbackpressed on fragment :)
+  @Override
+  public void onDetach() {
+    super.onDetach();
+    final ProfileFragment fragment = new ProfileFragment();
+    final FragmentTransaction transaction = getFragmentManager().beginTransaction();
+    transaction.show(fragment);
+    transaction.replace(android.R.id.tabcontent, fragment);
+    transaction.addToBackStack(null);
+    transaction.commit();
+  }
+
 }
