@@ -12,6 +12,7 @@ import skripsi.com.android.Utility;
 import skripsi.com.android.widget.Validate;
 import skripsi.com.grubber.dao.UserDao;
 import skripsi.com.grubber.model.User;
+import skripsi.com.grubber.profile.ProfileFragment;
 import skripsi.com.grubber.timeline.TimelineActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -38,6 +39,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -116,7 +118,7 @@ public class RegisterFragment extends Fragment {
 
     mProgressDialog = new ProgressBarDialogFragment();
     mProgressDialog.setCancelable(false);
-
+    TextView title = (TextView) view.findViewById(R.id.tvRegistrationPhoto);
     mPhoto = (ImageView) view.findViewById(R.id.gambar);
     mEmail = (EditText) view.findViewById(R.id.etRegistrationEmail);
     mPassword = (EditText) view.findViewById(R.id.etRegistrationPassword);
@@ -126,6 +128,10 @@ public class RegisterFragment extends Fragment {
     mAboutMe = (EditText) view.findViewById(R.id.etRegistrationAboutMe);
     btnSubmit = (Button) view.findViewById(R.id.btnSubmit);
     btnCancel = (Button) view.findViewById(R.id.btnCancel);
+
+    if (isEdit) {
+      title.setText("Edit Profile");
+    }
 
     mPhoto.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -229,9 +235,15 @@ public class RegisterFragment extends Fragment {
         Fragment f = null;
         transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,
             R.anim.slide_in_left, R.anim.slide_out_right);
-        f = Fragment.instantiate(getActivity(), LoginFragment.class.getName());
-        transaction.addToBackStack(null);
-        transaction.replace(R.id.content_frame, f);
+        if (!isEdit) {
+          f = Fragment.instantiate(getActivity(), LoginFragment.class.getName());
+          transaction.addToBackStack(null);
+          transaction.replace(R.id.content_frame, f);
+        } else {
+          f = Fragment.instantiate(getActivity(), ProfileFragment.class.getName());
+          transaction.addToBackStack(null);
+          transaction.replace(android.R.id.tabcontent, f);
+        }
         transaction.commit();
       }
     });
@@ -275,9 +287,15 @@ public class RegisterFragment extends Fragment {
       Fragment f = null;
       transaction.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,
           R.anim.slide_in_left, R.anim.slide_out_right);
-      f = Fragment.instantiate(getActivity(), LoginFragment.class.getName());
-      transaction.addToBackStack(null);
-      transaction.replace(R.id.content_frame, f);
+      if (!isEdit) {
+        f = Fragment.instantiate(getActivity(), LoginFragment.class.getName());
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.content_frame, f);
+      } else {
+        f = Fragment.instantiate(getActivity(), ProfileFragment.class.getName());
+        transaction.addToBackStack(null);
+        transaction.replace(android.R.id.tabcontent, f);
+      }
       transaction.commit();
     }
     return super.onOptionsItemSelected(item);

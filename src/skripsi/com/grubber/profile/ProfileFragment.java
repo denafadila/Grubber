@@ -180,8 +180,8 @@ public class ProfileFragment extends Fragment implements
           // Perform action on key press
           searchResult.clear();
           mReviews.clear();
-          Toast.makeText(getActivity().getBaseContext(), etSearch.getText(), Toast.LENGTH_LONG)
-              .show();
+          Toast.makeText(getActivity().getBaseContext(), "Searching for " + etSearch.getText(),
+              Toast.LENGTH_LONG).show();
           InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
               Context.INPUT_METHOD_SERVICE);
           imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
